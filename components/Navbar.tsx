@@ -8,7 +8,7 @@ import { UserMenu } from "./UserMenu";
 export function Navbar() {
     return (
         <nav className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-200 h-16">
-            <div className="flex items-center justify-between px-4 py-0 max-w-screen-2xl mx-auto h-full">
+            <div className="flex items-center justify-between px-4 py-0 h-full space-x-4">
                 {/* left section */}
                 <div className="flex items-center space-x-4 h-full">
                     <Link href="/" className="flex items-center h-full">
@@ -49,7 +49,7 @@ export function Navbar() {
                     </div>
                 </div>
                 {/* center section */}
-                <div className="flex-1 max-w-4xl mx-6 h-full flex items-center">
+                <div className="flex-1 h-full flex items-center px-4">
                     <div className="relative w-full">
                         <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5 flex-shrink-0" />
                         <input
@@ -60,7 +60,7 @@ export function Navbar() {
                     </div>
                 </div>
                 {/* right section */}
-                <div className="flex items-center h-full">
+                <div className="flex items-center h-full px-4">
                     <UserMenu />
                 </div>
             </div>

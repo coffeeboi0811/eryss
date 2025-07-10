@@ -13,9 +13,9 @@ export function UserMenu() {
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
-                <Avatar className="cursor-pointer border-2 border-transparent hover:border-gray-300 transition">
+                <Avatar className="cursor-pointer border-2 border-transparent hover:border-gray-300 transition w-11 h-11">
                     <AvatarImage src="" alt="User profile" />
-                    <AvatarFallback className="bg-gradient-to-tr from-fuchsia-500 to-pink-400 text-white font-bold">
+                    <AvatarFallback className="bg-gradient-to-tr from-fuchsia-500 to-pink-400 text-white font-bold text-lg">
                         U
                     </AvatarFallback>
                 </Avatar>
