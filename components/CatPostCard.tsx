@@ -22,7 +22,7 @@ export function CatPostCard({
     return (
         <div
             className={cn(
-                "group relative overflow-hidden rounded-2xl shadow-sm transition-all cursor-pointer w-full block break-inside-avoid mb-4",
+                "group relative overflow-hidden rounded-2xl shadow-sm transition-all cursor-zoom-in w-full block break-inside-avoid mb-4",
                 className
             )}
         >
@@ -36,7 +36,7 @@ export function CatPostCard({
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end">
                 <div className="p-3 flex items-end justify-between">
-                    <Avatar className="w-8 h-8 border-2 border-white">
+                    <Avatar className="w-8 h-8 border-2 border-white cursor-pointer">
                         {authorImg ? (
                             <AvatarImage src={authorImg} alt={authorName} />
                         ) : (
@@ -49,21 +49,21 @@ export function CatPostCard({
                         <Button
                             size="sm"
                             variant="ghost"
-                            className="text-white hover:bg-white/20 h-8 w-8 p-0"
+                            className="text-white hover:bg-red-500/30 hover:text-red-400 h-8 w-8 p-0 cursor-pointer transition-all duration-200"
                         >
                             <Heart className="w-4 h-4" />
                         </Button>
                         <Button
                             size="sm"
                             variant="ghost"
-                            className="text-white hover:bg-white/20 h-8 w-8 p-0"
+                            className="text-white hover:bg-blue-500/30 hover:text-blue-400 h-8 w-8 p-0 cursor-pointer transition-all duration-200"
                         >
                             <Bookmark className="w-4 h-4" />
                         </Button>
                         <Button
                             size="sm"
                             variant="ghost"
-                            className="text-white hover:bg-white/20 h-8 w-8 p-0"
+                            className="text-white hover:bg-green-500/30 hover:text-green-400 h-8 w-8 p-0 cursor-pointer transition-all duration-200"
                         >
                             <Download className="w-4 h-4" />
                         </Button>
