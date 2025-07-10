@@ -54,7 +54,7 @@ export function Navbar() {
                         <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5 flex-shrink-0" />
                         <input
                             type="text"
-                            placeholder="Search for cat photos"
+                            placeholder="Search for images, users..."
                             className="w-full pl-12 pr-4 py-3 bg-gray-100 rounded-full border-0 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all duration-200 h-12 text-base"
                         />
                     </div>

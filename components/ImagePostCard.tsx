@@ -6,19 +6,19 @@ import { Heart, Bookmark, Download } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
 
-interface CatPostCardProps {
+interface ImagePostCardProps {
     imageSrc: string;
     authorImg?: string;
     authorName?: string;
     className?: string;
 }
 
-export function CatPostCard({
+export function ImagePostCard({
     imageSrc,
     authorImg,
     authorName,
     className,
-}: CatPostCardProps) {
+}: ImagePostCardProps) {
     return (
         <div
             className={cn(
@@ -28,7 +28,7 @@ export function CatPostCard({
         >
             <Image
                 src={imageSrc}
-                alt="Cat image"
+                alt="Image"
                 width={300}
                 height={400}
                 className="w-full h-auto object-cover transition-transform duration-300 group-hover:scale-105"
@@ -41,7 +41,7 @@ export function CatPostCard({
                             <AvatarImage src={authorImg} alt={authorName} />
                         ) : (
                             <AvatarFallback className="bg-white/20 text-white text-xs">
-                                {authorName?.[0] || "C"}
+                                {authorName?.[0] || "A"}
                             </AvatarFallback>
                         )}
                     </Avatar>

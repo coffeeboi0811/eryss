@@ -1,7 +1,7 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ResponsiveMasonryGrid } from "@/components/ResponsiveMasonryGrid";
-import { CatPostCard } from "@/components/CatPostCard";
-import { catPosts } from "@/lib/catPostsData";
+import { ImagePostCard } from "@/components/ImagePostCard";
+import { imagePosts } from "@/lib/imagePostsData";
 
 export default function ExplorePage() {
     return (
@@ -30,12 +30,12 @@ export default function ExplorePage() {
                     <TabsContent value="now" className="mt-0">
                         <div className="text-center mb-6">
                             <p className="text-gray-600 text-sm">
-                                Latest cat posts from the community
+                                Latest image posts from the community
                             </p>
                         </div>
                         <ResponsiveMasonryGrid>
-                            {catPosts.map((post, index) => (
-                                <CatPostCard
+                            {imagePosts.map((post, index) => (
+                                <ImagePostCard
                                     key={`now-${index}`}
                                     imageSrc={post.imageSrc}
                                     authorImg={post.authorImg}
@@ -47,12 +47,12 @@ export default function ExplorePage() {
                     <TabsContent value="trending" className="mt-0">
                         <div className="text-center mb-6">
                             <p className="text-gray-600 text-sm">
-                                Most loved cats this week
+                                Most loved images this week
                             </p>
                         </div>
                         <ResponsiveMasonryGrid>
-                            {catPosts.map((post, index) => (
-                                <CatPostCard
+                            {imagePosts.map((post, index) => (
+                                <ImagePostCard
                                     key={`trending-${index}`}
                                     imageSrc={post.imageSrc}
                                     authorImg={post.authorImg}
