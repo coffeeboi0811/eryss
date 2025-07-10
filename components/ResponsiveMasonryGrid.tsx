@@ -3,6 +3,7 @@
 import Masonry from "react-masonry-css";
 import { ReactNode } from "react";
 import { cn } from "@/lib/utils";
+import "@/components/masonry.css";
 
 interface ResponsiveMasonryGridProps {
     children: ReactNode;

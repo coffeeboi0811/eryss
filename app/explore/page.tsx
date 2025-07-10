@@ -11,7 +11,7 @@ export default function ExplorePage() {
                     Explore
                 </h1>
                 <Tabs defaultValue="now" className="w-full">
-                    <div className="flex justify-center mb-8">
+                    <div className="flex justify-center mb-8 sticky top-16 bg-white z-10">
                         <TabsList className="grid w-full max-w-md grid-cols-2 h-12">
                             <TabsTrigger
                                 value="now"

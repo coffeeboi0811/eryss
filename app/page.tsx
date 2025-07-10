@@ -1,7 +1,6 @@
 import { ResponsiveMasonryGrid } from "@/components/ResponsiveMasonryGrid";
 import { CatPostCard } from "@/components/CatPostCard";
 import { catPosts } from "@/lib/catPostsData";
-import "@/components/masonry.css";
 
 export default function Home() {
     return (
