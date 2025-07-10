@@ -4,10 +4,9 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
     DropdownMenuSeparator,
-    DropdownMenuLabel,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { LogOut, Settings, User } from "lucide-react";
+import { LogOut, Star } from "lucide-react";
 
 export function UserMenu() {
     return (
@@ -20,20 +19,42 @@ export function UserMenu() {
                     </AvatarFallback>
                 </Avatar>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56">
-                <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem className="flex items-center gap-2">
-                    <User className="w-4 h-4" />
-                    Profile
+            <DropdownMenuContent
+                align="end"
+                className="w-64 p-2 space-y-3 shadow-lg border border-gray-200 rounded-lg relative"
+            >
+                <div className="absolute -top-2 right-4 w-4 h-4 bg-white border border-gray-200 rotate-45 transform origin-bottom-left"></div>
+                <DropdownMenuItem className="flex items-center gap-3 cursor-pointer text-xl">
+                    <Avatar className="w-12 h-12">
+                        <AvatarImage src="" alt="User profile" />
+                        <AvatarFallback className="bg-gradient-to-tr from-fuchsia-500 to-pink-400 text-white font-bold text-lg">
+                            U
+                        </AvatarFallback>
+                    </Avatar>
+                    <div className="flex flex-col overflow-hidden">
+                        <span className="text-lg font-medium truncate">
+                            Retardddd
+                        </span>
+                        <span className="text-sm text-gray-500 truncate">
+                            bitchassssmfffffff@gmail.com
+                        </span>
+                    </div>
                 </DropdownMenuItem>
-                <DropdownMenuItem className="flex items-center gap-2">
-                    <Settings className="w-4 h-4" />
-                    Settings
-                </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem className="flex items-center gap-2 text-red-600 hover:text-red-700">
-                    <LogOut className="w-4 h-4" />
+                <DropdownMenuItem
+                    className="flex items-center gap-2 cursor-pointer hover:text-yellow-600"
+                    onClick={() =>
+                        window.open(
+                            "https://github.com/coffeeboi0811/eryss",
+                            "_blank"
+                        )
+                    }
+                >
+                    <Star className="w-4 h-4 text-yellow-500" />
+                    Star on GitHub
+                </DropdownMenuItem>
+                <DropdownMenuItem className="flex items-center gap-2 text-red-600 cursor-pointer">
+                    <LogOut className="w-4 h-4 text-red-600" />
                     Log out
                 </DropdownMenuItem>
             </DropdownMenuContent>
