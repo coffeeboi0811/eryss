@@ -7,7 +7,7 @@ export default function Home() {
         <main className="w-full px-4 py-8">
             <ResponsiveMasonryGrid>
                 {imagePosts.map((post, i) => (
-                    <ImagePostCard key={i} {...post} />
+                    <ImagePostCard key={i} {...post} index={i} />
                 ))}
             </ResponsiveMasonryGrid>
         </main>

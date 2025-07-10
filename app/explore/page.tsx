@@ -30,7 +30,7 @@ export default function ExplorePage() {
                     <TabsContent value="now" className="mt-0">
                         <div className="text-center mb-6">
                             <p className="text-gray-600 text-sm">
-                                Latest image posts from the community
+                                Latest images from the community
                             </p>
                         </div>
                         <ResponsiveMasonryGrid>
@@ -40,6 +40,7 @@ export default function ExplorePage() {
                                     imageSrc={post.imageSrc}
                                     authorImg={post.authorImg}
                                     authorName={post.authorName}
+                                    index={index}
                                 />
                             ))}
                         </ResponsiveMasonryGrid>
@@ -57,6 +58,7 @@ export default function ExplorePage() {
                                     imageSrc={post.imageSrc}
                                     authorImg={post.authorImg}
                                     authorName={post.authorName}
+                                    index={index}
                                 />
                             ))}
                         </ResponsiveMasonryGrid>

@@ -5,12 +5,14 @@ import { Button } from "@/components/ui/button";
 import { Heart, Bookmark, Download } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
+import { useRouter } from "next/navigation";
 
 interface ImagePostCardProps {
     imageSrc: string;
     authorImg?: string;
     authorName?: string;
     className?: string;
+    index?: number;
 }
 
 export function ImagePostCard({
@@ -18,13 +20,23 @@ export function ImagePostCard({
     authorImg,
     authorName,
     className,
+    index,
 }: ImagePostCardProps) {
+    const router = useRouter();
+
+    const handleImageClick = () => {
+        if (index !== undefined) {
+            router.push(`/image/${index}`);
+        }
+    };
+
     return (
         <div
             className={cn(
                 "group relative overflow-hidden rounded-2xl shadow-sm transition-all cursor-zoom-in w-full block break-inside-avoid mb-4",
                 className
             )}
+            onClick={handleImageClick}
         >
             <Image
                 src={imageSrc}
