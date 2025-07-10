@@ -20,7 +20,7 @@ export function ImageDetailLeftPanel({
     const router = useRouter();
 
     return (
-        <div className="w-1/2 h-screen flex flex-col bg-gray-50 relative">
+        <div className="w-3/5 h-screen flex flex-col bg-gray-50 relative">
             <div className="absolute top-4 left-4 z-10">
                 <Button
                     variant="ghost"
