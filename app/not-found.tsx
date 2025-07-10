@@ -1,0 +1,33 @@
+"use client";
+
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { Toaster } from "@/components/ui/sonner";
+
+export default function NotFound() {
+    const router = useRouter();
+    useEffect(() => {
+        toast.error("Page not found - taking you home");
+
+        const timeout = setTimeout(() => {
+            router.replace("/"); // replace instead of push to avoid back button issues.
+        }, 1500);
+
+        return () => clearTimeout(timeout);
+    }, [router]);
+
+    return (
+        <>
+            <div className="fixed inset-0 flex items-center justify-center bg-white">
+                <p className="text-gray-600">Redirecting...</p>
+            </div>
+            <Toaster
+                position="bottom-center"
+                richColors
+                duration={1500}
+                className="z-50"
+            />
+        </>
+    );
+}
