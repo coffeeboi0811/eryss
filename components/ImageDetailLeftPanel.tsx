@@ -2,9 +2,8 @@
 
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { Heart, Bookmark, Download, Share, ArrowLeft } from "lucide-react";
+import { Heart, Bookmark, Download, Share } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { useRouter } from "next/navigation";
 
 interface ImageDetailLeftPanelProps {
     imageSrc: string;
@@ -17,21 +16,8 @@ export function ImageDetailLeftPanel({
     authorImg,
     authorName,
 }: ImageDetailLeftPanelProps) {
-    const router = useRouter();
-
     return (
-        <div className="flex flex-col bg-gray-50 sticky top-0">
-            <div className="absolute top-4 left-4 z-10">
-                <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => router.back()}
-                    className="bg-white/80 backdrop-blur-sm hover:bg-white/90 text-gray-700 cursor-pointer"
-                >
-                    <ArrowLeft className="w-4 h-4 mr-1" />
-                    Back
-                </Button>
-            </div>
+        <div className="flex flex-col bg-gray-50 min-h-screen">
             <div className="flex items-center justify-center p-8">
                 <div className="relative max-w-full">
                     <Image

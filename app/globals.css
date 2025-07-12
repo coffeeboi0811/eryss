@@ -127,5 +127,5 @@
     border-radius: 10px;
 }
 .panel-scrollbar::-webkit-scrollbar-track {
-    background-color: #f8fafc;
+    background-color: transparent;
 }
