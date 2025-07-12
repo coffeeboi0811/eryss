@@ -20,26 +20,26 @@ export function ImageDetailLeftPanel({
     const router = useRouter();
 
     return (
-        <div className="w-3/5 h-screen flex flex-col bg-gray-50 relative">
+        <div className="flex flex-col bg-gray-50 sticky top-0">
             <div className="absolute top-4 left-4 z-10">
                 <Button
                     variant="ghost"
                     size="sm"
                     onClick={() => router.back()}
-                    className="bg-white/80 backdrop-blur-sm hover:bg-white/90 text-gray-700"
+                    className="bg-white/80 backdrop-blur-sm hover:bg-white/90 text-gray-700 cursor-pointer"
                 >
                     <ArrowLeft className="w-4 h-4 mr-1" />
                     Back
                 </Button>
             </div>
-            <div className="flex-1 flex items-center justify-center p-8">
-                <div className="relative max-w-full max-h-full">
+            <div className="flex items-center justify-center p-8">
+                <div className="relative max-w-full">
                     <Image
                         src={imageSrc}
                         alt="Image detail"
                         width={800}
                         height={600}
-                        className="max-w-full max-h-full object-contain rounded-lg shadow-lg"
+                        className="max-w-full object-contain rounded-lg shadow-lg"
                         priority
                     />
                 </div>
@@ -72,19 +72,19 @@ export function ImageDetailLeftPanel({
                     </p>
                 </div>
                 <div className="flex gap-3">
-                    <Button className="flex-1 bg-red-600 hover:bg-red-700 text-white">
+                    <Button className="flex-1 bg-red-600 hover:bg-red-700 text-white cursor-pointer">
                         <Heart className="w-4 h-4 mr-2" />
-                        Save
+                        Like
                     </Button>
-                    <Button variant="outline" className="flex-1">
+                    <Button variant="outline" className="flex-1 cursor-pointer">
                         <Share className="w-4 h-4 mr-2" />
                         Share
                     </Button>
-                    <Button variant="outline" className="flex-1">
+                    <Button variant="outline" className="flex-1 cursor-pointer">
                         <Bookmark className="w-4 h-4 mr-2" />
-                        Bookmark
+                        Save
                     </Button>
-                    <Button variant="outline" className="flex-1">
+                    <Button variant="outline" className="flex-1 cursor-pointer">
                         <Download className="w-4 h-4 mr-2" />
                         Download
                     </Button>

@@ -22,16 +22,20 @@ export default async function ImageDetailPage({
     const relatedImages = imagePosts.filter((_, index) => index !== imageIndex);
 
     return (
-        <div className="min-h-screen bg-white flex">
-            <ImageDetailLeftPanel
-                imageSrc={imageData.imageSrc}
-                authorImg={imageData.authorImg}
-                authorName={imageData.authorName}
-            />
-            <ImageDetailRightPanel
-                relatedImages={relatedImages}
-                imagePosts={imagePosts}
-            />
+        <div className="h-screen bg-white flex overflow-hidden">
+            <div className="w-3/5 overflow-y-auto panel-scrollbar scroll-smooth">
+                <ImageDetailLeftPanel
+                    imageSrc={imageData.imageSrc}
+                    authorImg={imageData.authorImg}
+                    authorName={imageData.authorName}
+                />
+            </div>
+            <div className="w-2/5 overflow-y-auto panel-scrollbar scroll-smooth">
+                <ImageDetailRightPanel
+                    relatedImages={relatedImages}
+                    imagePosts={imagePosts}
+                />
+            </div>
         </div>
     );
 }
