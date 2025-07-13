@@ -26,6 +26,7 @@ export function ImagePostCard({
 
     const handleImageClick = () => {
         if (index !== undefined) {
+            window.scrollTo(0, 0); // force scroll to top before navigation
             router.push(`/image/${index}`);
         }
     };

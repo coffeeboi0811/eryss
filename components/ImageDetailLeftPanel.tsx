@@ -17,7 +17,7 @@ export function ImageDetailLeftPanel({
     authorName,
 }: ImageDetailLeftPanelProps) {
     return (
-        <div className="flex flex-col bg-gray-50 min-h-screen">
+        <div className="flex flex-col bg-gray-50">
             <div className="flex items-center justify-center p-8">
                 <div className="relative max-w-full">
                     <Image
