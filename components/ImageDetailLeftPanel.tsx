@@ -32,11 +32,11 @@ export function ImageDetailLeftPanel({
             </div>
             <div className="p-6 bg-white border-t border-gray-200">
                 <div className="flex items-center gap-3 mb-4">
-                    <Avatar className="w-10 h-10">
+                    <Avatar className="w-10 h-10 cursor-pointer">
                         {authorImg ? (
                             <AvatarImage src={authorImg} alt={authorName} />
                         ) : (
-                            <AvatarFallback className="bg-gray-200 text-gray-600">
+                            <AvatarFallback className="bg-gray-200 text-gray-600 cursor-pointer">
                                 {authorName?.[0] || "A"}
                             </AvatarFallback>
                         )}
