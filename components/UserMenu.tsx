@@ -1,3 +1,5 @@
+"use client";
+
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -7,8 +9,10 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { LogOut, Star } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export function UserMenu() {
+    const router = useRouter();
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -24,7 +28,10 @@ export function UserMenu() {
                 className="w-64 p-2 space-y-3 shadow-lg border border-gray-200 rounded-lg relative"
             >
                 <div className="absolute -top-2 right-4 w-4 h-4 bg-white border border-gray-200 rotate-45 transform origin-bottom-left"></div>
-                <DropdownMenuItem className="flex items-center gap-3 cursor-pointer text-xl">
+                <DropdownMenuItem
+                    className="flex items-center gap-3 cursor-pointer text-xl"
+                    onClick={() => router.push("/user/retard")}
+                >
                     <Avatar className="w-12 h-12">
                         <AvatarImage src="" alt="User profile" />
                         <AvatarFallback className="bg-gradient-to-tr from-fuchsia-500 to-pink-400 text-white font-bold text-lg">
