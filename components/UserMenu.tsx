@@ -48,7 +48,10 @@ export function UserMenu() {
                     </div>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem className="flex items-center gap-2 cursor-pointer hover:text-pink-600">
+                <DropdownMenuItem
+                    className="flex items-center gap-2 cursor-pointer hover:text-pink-600"
+                    onClick={() => router.push("/likes")}
+                >
                     <Heart className="w-4 h-4 text-pink-500" />
                     Liked images
                 </DropdownMenuItem>
