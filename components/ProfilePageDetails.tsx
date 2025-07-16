@@ -14,7 +14,6 @@ export default function ProfilePageDetails() {
                         C
                     </AvatarFallback>
                 </Avatar>
-
                 <div className="space-y-4">
                     <div className="space-y-2">
                         <h1 className="text-4xl font-bold text-gray-900">
@@ -26,22 +25,18 @@ export default function ProfilePageDetails() {
                             </span>
                         </div>
                     </div>
-
                     <p className="text-gray-700 text-base leading-relaxed max-w-md mx-auto">
                         Digital artist passionate about creating aesthetic
                         visuals and inspiring creativity through art.
                     </p>
-
                     <div className="flex items-center justify-center gap-2 text-gray-500 text-sm">
                         <Calendar className="w-3 h-3" />
                         <span>Joined March 2024</span>
                     </div>
-
                     <p className="text-gray-500 text-sm font-semibold">
                         1.2k followers • 342 likes • 21 images
                     </p>
                 </div>
-
                 <div className="flex gap-3">
                     <Button
                         variant="outline"

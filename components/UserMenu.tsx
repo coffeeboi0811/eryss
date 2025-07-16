@@ -8,7 +8,7 @@ import {
     DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { LogOut, Star } from "lucide-react";
+import { LogOut, Star, Bookmark, Heart } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 export function UserMenu() {
@@ -48,6 +48,14 @@ export function UserMenu() {
                     </div>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
+                <DropdownMenuItem className="flex items-center gap-2 cursor-pointer hover:text-pink-600">
+                    <Heart className="w-4 h-4 text-pink-500" />
+                    Liked images
+                </DropdownMenuItem>
+                <DropdownMenuItem className="flex items-center gap-2 cursor-pointer hover:text-blue-600">
+                    <Bookmark className="w-4 h-4 text-blue-500" />
+                    Saved images
+                </DropdownMenuItem>
                 <DropdownMenuItem
                     className="flex items-center gap-2 cursor-pointer hover:text-yellow-600"
                     onClick={() =>
