@@ -18,6 +18,7 @@ export default function CreateImage() {
         if (file && file.type.startsWith("image/")) {
             const reader = new FileReader();
             reader.onload = (e) => {
+                // reader.onload is a callback that runs after readAsDataURL() completes its async file reading.
                 setSelectedImage(e.target?.result as string);
             };
             reader.readAsDataURL(file);
@@ -35,12 +36,10 @@ export default function CreateImage() {
         e.preventDefault();
         setIsDragging(true);
     };
-
     const handleDragLeave = (e: React.DragEvent) => {
         e.preventDefault();
         setIsDragging(false);
     };
-
     const handleDrop = (e: React.DragEvent) => {
         e.preventDefault();
         setIsDragging(false);
@@ -93,13 +92,14 @@ export default function CreateImage() {
                                         Choose a file or drag and drop it here
                                     </h3>
                                     <p className="text-sm text-muted-foreground text-center mb-6">
-                                        Supported formats: JPG, PNG, GIF, SVG
+                                        Supported formats: PNG, JPG, JPEG, WEBP,
+                                        GIF
                                     </p>
                                 </div>
                                 <input
                                     ref={fileInputRef}
                                     type="file"
-                                    accept="image/*"
+                                    accept="image/png, image/jpeg, image/jpg, image/webp, image/gif"
                                     className="hidden"
                                     onChange={handleFileInputChange}
                                 />
