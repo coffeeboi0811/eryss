@@ -52,7 +52,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
                     </TabsContent>
                     <TabsContent value="users" className="mt-0">
                         <div className="max-w-4xl mx-auto">
-                            <div className="bg-white rounded-lg divide-y divide-gray-100">
+                            <div className="bg-white rounded-lg divide-y divide-gray-100 flex flex-col gap-3">
                                 {mockUsers.map((user, index) => (
                                     <UserSearchResult
                                         key={`user-${index}`}
