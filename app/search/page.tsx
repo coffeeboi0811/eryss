@@ -2,13 +2,22 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ResponsiveMasonryGrid } from "@/components/ResponsiveMasonryGrid";
 import { ImagePostCard } from "@/components/ImagePostCard";
 import { imagePosts } from "@/lib/imagePostsData";
+import SearchResultUsers from "@/components/SearchResultUsers";
 
-export default function SearchPage() {
+interface SearchPageProps {
+    searchParams: Promise<{
+        q?: string;
+    }>;
+}
+
+export default async function SearchPage({ searchParams }: SearchPageProps) {
+    const { q } = await searchParams;
+    const query = q?.trim() || "";
     return (
         <div className="min-h-screen bg-white w-full">
             <div className="w-full px-4 py-8">
                 <h1 className="text-3xl font-bold text-gray-900 mb-8 text-center">
-                    Search results for ....
+                    Search results for: {query}
                 </h1>
                 <Tabs defaultValue="images" className="w-full">
                     <div className="flex justify-center mb-8 sticky top-16 bg-white z-10">
@@ -41,7 +50,7 @@ export default function SearchPage() {
                         </ResponsiveMasonryGrid>
                     </TabsContent>
                     <TabsContent value="users" className="mt-0">
-                        <h1>Stuff here</h1>
+                        <SearchResultUsers />
                     </TabsContent>
                 </Tabs>
             </div>
