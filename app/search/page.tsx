@@ -1,8 +1,9 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ResponsiveMasonryGrid } from "@/components/ResponsiveMasonryGrid";
 import { ImagePostCard } from "@/components/ImagePostCard";
+import { UserSearchResult } from "@/components/UserSearchResult";
 import { imagePosts } from "@/lib/imagePostsData";
-import SearchResultUsers from "@/components/SearchResultUsers";
+import { mockUsers } from "@/lib/userData";
 
 interface SearchPageProps {
     searchParams: Promise<{
@@ -50,7 +51,20 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
                         </ResponsiveMasonryGrid>
                     </TabsContent>
                     <TabsContent value="users" className="mt-0">
-                        <SearchResultUsers />
+                        <div className="max-w-4xl mx-auto">
+                            <div className="bg-white rounded-lg divide-y divide-gray-100">
+                                {mockUsers.map((user, index) => (
+                                    <UserSearchResult
+                                        key={`user-${index}`}
+                                        avatarSrc={user.avatarSrc}
+                                        fullName={user.fullName}
+                                        handle={user.handle}
+                                        followerCount={user.followerCount}
+                                        bio={user.bio}
+                                    />
+                                ))}
+                            </div>
+                        </div>
                     </TabsContent>
                 </Tabs>
             </div>
