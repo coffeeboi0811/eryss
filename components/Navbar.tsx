@@ -4,8 +4,11 @@ import { Search, Home, Compass, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { UserMenu } from "./UserMenu";
+import { useRouter } from "next/navigation";
 
 export function Navbar() {
+    const router = useRouter();
+
     return (
         <nav className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-200 h-16">
             <div className="flex items-center justify-between px-4 py-0 h-full space-x-4">
@@ -50,14 +53,26 @@ export function Navbar() {
                 </div>
                 {/* center section */}
                 <div className="flex-1 h-full flex items-center px-4">
-                    <div className="relative w-full">
+                    <form
+                        className="relative w-full"
+                        onSubmit={(e) => {
+                            e.preventDefault();
+                            const query = e.currentTarget.search.value.trim();
+                            if (query) {
+                                router.push(
+                                    `/search?q=${encodeURIComponent(query)}`
+                                );
+                            }
+                        }}
+                    >
                         <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5 flex-shrink-0" />
                         <input
                             type="text"
+                            name="search"
                             placeholder="Search for images, users..."
                             className="w-full pl-12 pr-4 py-3 bg-gray-100 rounded-full border-0 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all duration-200 h-12 text-base"
                         />
-                    </div>
+                    </form>
                 </div>
                 {/* right section */}
                 <div className="flex items-center h-full px-4">
