@@ -19,22 +19,22 @@ export function UserSearchResult({
     const truncatedBio = bio.length > 120 ? bio.substring(0, 120) + "..." : bio;
 
     return (
-        <div className="flex items-start gap-4 p-4 bg-gray-50 transition-colors shadow-sm border border-gray-100 rounded-xl hover:bg-gray-100">
+        <div className="flex items-start gap-4 p-4 bg-card transition-colors border border-border rounded-xl hover:bg-accent/50">
             <Avatar className="w-14 h-14 flex-shrink-0 cursor-pointer">
                 <AvatarImage src={avatarSrc} alt={fullName} />
                 <AvatarFallback>{fullName.charAt(0)}</AvatarFallback>
             </Avatar>
             <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-1">
-                    <h3 className="font-bold text-gray-900 text-base">
+                    <h3 className="font-bold text-foreground text-base">
                         {fullName}
                     </h3>
                 </div>
-                <p className="text-gray-600 text-sm mb-1">@{handle}</p>
-                <p className="text-gray-500 text-sm mb-2">
+                <p className="text-muted-foreground text-sm mb-1">@{handle}</p>
+                <p className="text-muted-foreground text-sm mb-2">
                     {followerCount} followers
                 </p>
-                <p className="text-gray-700 text-sm leading-5">
+                <p className="text-foreground text-sm leading-5">
                     {truncatedBio}
                 </p>
             </div>

@@ -8,26 +8,34 @@ import {
     DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { LogOut, Star, Bookmark, Heart } from "lucide-react";
+import {
+    LogOut,
+    Star,
+    Bookmark,
+    Heart,
+    Monitor,
+    Sun,
+    Moon,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
+import { useTheme } from "next-themes";
 
 export function UserMenu() {
     const router = useRouter();
+    const { setTheme, theme } = useTheme();
+
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
-                <Avatar className="cursor-pointer border-2 border-transparent hover:border-gray-300 transition w-11 h-11">
+                <Avatar className="cursor-pointer border-2 border-transparent hover:border-muted transition w-11 h-11">
                     <AvatarImage src="" alt="User profile" />
                     <AvatarFallback className="bg-gradient-to-tr from-fuchsia-500 to-pink-400 text-white font-bold text-lg">
                         U
                     </AvatarFallback>
                 </Avatar>
             </DropdownMenuTrigger>
-            <DropdownMenuContent
-                align="end"
-                className="w-64 p-2 space-y-3 shadow-lg border border-gray-200 rounded-lg relative"
-            >
-                <div className="absolute -top-2 right-4 w-4 h-4 bg-white border border-gray-200 rotate-45 transform origin-bottom-left"></div>
+            <DropdownMenuContent align="end" className="w-64 p-2 space-y-3">
                 <DropdownMenuItem
                     className="flex items-center gap-3 cursor-pointer text-xl"
                     onClick={() => router.push("/user/retard")}
@@ -42,9 +50,39 @@ export function UserMenu() {
                         <span className="text-lg font-medium truncate">
                             Retardddd
                         </span>
-                        <span className="text-sm text-gray-500 truncate">
+                        <span className="text-sm text-muted-foreground truncate">
                             bitchassssmfffffff@gmail.com
                         </span>
+                    </div>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem className="flex flex-col gap-2 py-2">
+                    <span className="text-sm text-foreground mb-1">Theme</span>
+                    <div className="flex items-center gap-2">
+                        <Button
+                            variant={theme === "system" ? "default" : "outline"}
+                            size="icon"
+                            className="rounded-full w-8 h-8 flex items-center justify-center cursor-pointer"
+                            onClick={() => setTheme("system")}
+                        >
+                            <Monitor className="w-5 h-5" />
+                        </Button>
+                        <Button
+                            variant={theme === "light" ? "default" : "outline"}
+                            size="icon"
+                            className="rounded-full w-8 h-8 flex items-center justify-center cursor-pointer"
+                            onClick={() => setTheme("light")}
+                        >
+                            <Sun className="w-5 h-5" />
+                        </Button>
+                        <Button
+                            variant={theme === "dark" ? "default" : "outline"}
+                            size="icon"
+                            className="rounded-full w-8 h-8 flex items-center justify-center cursor-pointer"
+                            onClick={() => setTheme("dark")}
+                        >
+                            <Moon className="w-5 h-5" />
+                        </Button>
                     </div>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
