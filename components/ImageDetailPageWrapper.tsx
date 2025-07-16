@@ -56,8 +56,8 @@ export function ImageDetailPageWrapper({
                 </Button>
             </div>
             {/* left panel */}
-            <div className="w-3/5 overflow-y-auto panel-scrollbar scroll-smooth">
-                <div className="pb-12 px-4">
+            <div className="w-full md:w-3/5 overflow-y-auto panel-scrollbar scroll-smooth">
+                <div className="pb-20 md:pb-12 px-4">
                     <ImageDetailLeftPanel
                         imageSrc={imageData.imageSrc}
                         authorImg={imageData.authorImg}
@@ -65,9 +65,8 @@ export function ImageDetailPageWrapper({
                     />
                 </div>
             </div>
-
-            {/* right panel */}
-            <div className="w-2/5 overflow-y-auto panel-scrollbar scroll-smooth">
+            {/* right panel - hidden on mobile */}
+            <div className="hidden md:block w-2/5 overflow-y-auto panel-scrollbar scroll-smooth">
                 <div className="pb-12 px-4">
                     <ImageDetailRightPanel
                         relatedImages={relatedImages}

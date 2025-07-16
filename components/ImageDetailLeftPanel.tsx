@@ -79,7 +79,7 @@ export function ImageDetailLeftPanel({
                         of creativity and imagination.
                     </p>
                     <div className="w-full border-t border-border mb-6" />
-                    <div className="flex gap-3">
+                    <div className="flex gap-3 mb-8 md:mb-0 overflow-x-auto">
                         <Button className="flex-1 bg-red-600 hover:bg-red-700 text-white shadow cursor-pointer">
                             <Heart className="w-4 h-4 mr-2" />
                             Like
