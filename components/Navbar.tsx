@@ -4,10 +4,11 @@ import { Search, Home, Compass, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { UserMenu } from "./UserMenu";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 
 export function Navbar() {
     const router = useRouter();
+    const pathname = usePathname();
 
     return (
         <>
@@ -94,7 +95,7 @@ export function Navbar() {
                         </div>
                     </Link>
 
-                    <div className="flex-1 h-full flex items-center px-4">
+                    <div className="flex-1 h-full flex items-center px-2">
                         <form
                             className="relative w-full"
                             onSubmit={(e) => {
@@ -108,16 +109,15 @@ export function Navbar() {
                                 }
                             }}
                         >
-                            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4 flex-shrink-0" />
+                            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4 flex-shrink-0" />
                             <input
                                 type="text"
                                 name="search"
                                 placeholder="Search..."
-                                className="w-full pl-10 pr-4 py-2 bg-muted rounded-full border-0 focus:outline-none focus:ring-2 focus:ring-ring focus:bg-background transition-all duration-200 h-8 text-sm"
+                                className="w-full pl-10 pr-3 py-2 bg-muted rounded-full border-0 focus:outline-none focus:ring-2 focus:ring-ring focus:bg-background transition-all duration-200 h-9 text-sm"
                             />
                         </form>
                     </div>
-
                     <div className="flex items-center h-full">
                         <UserMenu />
                     </div>
@@ -129,7 +129,11 @@ export function Navbar() {
                     <Link href="/" className="flex-1 h-full">
                         <Button
                             variant="ghost"
-                            className="w-full h-full font-semibold text-foreground cursor-pointer flex flex-col items-center justify-center gap-1 flex-shrink-0"
+                            className={`w-full h-full font-semibold cursor-pointer flex flex-col items-center justify-center gap-1 flex-shrink-0 ${
+                                pathname === "/"
+                                    ? "text-foreground bg-accent"
+                                    : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
+                            }`}
                         >
                             <Home className="w-5 h-5 flex-shrink-0" />
                             <span className="text-xs">Home</span>
@@ -138,7 +142,11 @@ export function Navbar() {
                     <Link href="/explore" className="flex-1 h-full">
                         <Button
                             variant="ghost"
-                            className="w-full h-full font-semibold text-muted-foreground cursor-pointer flex flex-col items-center justify-center gap-1 flex-shrink-0"
+                            className={`w-full h-full font-semibold cursor-pointer flex flex-col items-center justify-center gap-1 flex-shrink-0 ${
+                                pathname === "/explore"
+                                    ? "text-foreground bg-accent"
+                                    : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
+                            }`}
                         >
                             <Compass className="w-5 h-5 flex-shrink-0" />
                             <span className="text-xs">Explore</span>
@@ -147,7 +155,11 @@ export function Navbar() {
                     <Link href="/create" className="flex-1 h-full">
                         <Button
                             variant="ghost"
-                            className="w-full h-full font-semibold text-muted-foreground cursor-pointer flex flex-col items-center justify-center gap-1 flex-shrink-0"
+                            className={`w-full h-full font-semibold cursor-pointer flex flex-col items-center justify-center gap-1 flex-shrink-0 ${
+                                pathname === "/create"
+                                    ? "text-foreground bg-accent"
+                                    : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
+                            }`}
                         >
                             <Plus className="w-5 h-5 flex-shrink-0" />
                             <span className="text-xs">Create</span>
