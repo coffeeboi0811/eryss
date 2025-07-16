@@ -55,7 +55,10 @@ export function UserMenu() {
                     <Heart className="w-4 h-4 text-pink-500" />
                     Liked images
                 </DropdownMenuItem>
-                <DropdownMenuItem className="flex items-center gap-2 cursor-pointer hover:text-blue-600">
+                <DropdownMenuItem
+                    className="flex items-center gap-2 cursor-pointer hover:text-blue-600"
+                    onClick={() => router.push("/saved")}
+                >
                     <Bookmark className="w-4 h-4 text-blue-500" />
                     Saved images
                 </DropdownMenuItem>
