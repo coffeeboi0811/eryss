@@ -19,8 +19,8 @@ export default function NotFound() {
 
     return (
         <>
-            <div className="fixed inset-0 flex items-center justify-center bg-white">
-                <p className="text-gray-600">Redirecting...</p>
+            <div className="fixed inset-0 flex items-center justify-center bg-background">
+                <p className="text-muted-foreground">Redirecting...</p>
             </div>
             <Toaster
                 position="bottom-center"

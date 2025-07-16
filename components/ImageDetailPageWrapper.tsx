@@ -42,14 +42,14 @@ export function ImageDetailPageWrapper({
     }, []);
 
     return (
-        <div className="h-screen bg-white flex overflow-hidden relative">
+        <div className="h-screen bg-background flex overflow-hidden relative">
             {/* fixed back button */}
             <div className="fixed top-20 left-4 z-50">
                 <Button
                     variant="ghost"
                     size="sm"
                     onClick={() => router.back()}
-                    className="bg-white/80 backdrop-blur-sm hover:bg-white/90 text-gray-700 cursor-pointer"
+                    className="bg-background/80 backdrop-blur-sm hover:bg-accent text-foreground cursor-pointer"
                 >
                     <ArrowLeft className="w-4 h-4 mr-1" />
                     Back

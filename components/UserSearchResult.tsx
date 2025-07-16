@@ -40,7 +40,7 @@ export function UserSearchResult({
             </div>
             <Button
                 size="sm"
-                className="rounded-full px-6 py-2 font-semibold bg-gray-900 text-white hover:bg-gray-800 shadow cursor-pointer"
+                className="rounded-full px-6 py-2 font-semibold bg-primary text-primary-foreground hover:bg-primary/90 shadow cursor-pointer"
             >
                 Follow
             </Button>
