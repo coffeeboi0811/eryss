@@ -4,30 +4,58 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Calendar } from "lucide-react";
 
-export default function ProfilePageDetails() {
+interface User {
+    id: string;
+    name: string | null;
+    image: string | null;
+    bio: string | null;
+}
+
+interface ProfilePageDetailsProps {
+    user: User;
+}
+
+export default function ProfilePageDetails({ user }: ProfilePageDetailsProps) {
+    const userInitials = user.name
+        ? user.name
+              .split(" ")
+              .map((n) => n[0])
+              .join("")
+              .toUpperCase()
+              .slice(0, 2)
+        : "U";
+    const userHandle =
+        user.name
+            ?.trim()
+            .toLowerCase()
+            .replace(/\s+/g, "_")
+            .replace(/[^a-z0-9_]/g, "") || "retardeduser";
+
     return (
         <div className="flex flex-col items-center justify-center min-h-[50vh] bg-muted/30 px-6 py-12">
             <div className="flex flex-col items-center space-y-8 max-w-lg text-center">
                 <Avatar className="w-32 h-32 cursor-pointer shadow-lg">
-                    <AvatarImage src="/image1.jpeg" alt="CoffeeBoi" />
+                    <AvatarImage
+                        src={user.image || ""}
+                        alt={user.name || "User"}
+                    />
                     <AvatarFallback className="bg-muted text-muted-foreground text-3xl">
-                        C
+                        {userInitials}
                     </AvatarFallback>
                 </Avatar>
                 <div className="space-y-4">
                     <div className="space-y-2">
                         <h1 className="text-4xl font-bold text-foreground">
-                            Retard
+                            {user.name || "User"}
                         </h1>
                         <div className="flex items-center justify-center gap-2 text-muted-foreground">
                             <span className="text-sm font-semibold">
-                                @retarded101
+                                @{userHandle}
                             </span>
                         </div>
                     </div>
                     <p className="text-foreground text-base leading-relaxed max-w-md mx-auto">
-                        Digital artist passionate about creating aesthetic
-                        visuals and inspiring creativity through art.
+                        {user.bio || "I am retarded"}
                     </p>
                     <div className="flex items-center justify-center gap-2 text-muted-foreground text-sm">
                         <Calendar className="w-3 h-3" />
