@@ -21,38 +21,56 @@ import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
 import { signOut } from "next-auth/react";
+import { Session } from "next-auth";
 
-export function UserMenu() {
+interface UserMenuProps {
+    session: Session;
+}
+
+export function UserMenu({ session }: UserMenuProps) {
     const router = useRouter();
     const { setTheme, theme } = useTheme();
+
+    const user = session?.user;
+    const userInitials = user?.name
+        ? user.name
+              .split(" ")
+              .map((n) => n[0])
+              .join("")
+              .toUpperCase()
+              .slice(0, 2)
+        : "U";
 
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
                 <Avatar className="cursor-pointer border-2 border-transparent hover:border-muted transition w-11 h-11">
-                    <AvatarImage src="" alt="User profile" />
+                    <AvatarImage src={user?.image || ""} alt="User profile" />
                     <AvatarFallback className="bg-gradient-to-tr from-fuchsia-500 to-pink-400 text-white font-bold text-lg">
-                        U
+                        {userInitials}
                     </AvatarFallback>
                 </Avatar>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-64 p-2 space-y-3">
                 <DropdownMenuItem
                     className="flex items-center gap-3 cursor-pointer text-xl"
-                    onClick={() => router.push("/user/retard")}
+                    onClick={() => router.push(`/user/${user?.id}`)}
                 >
                     <Avatar className="w-12 h-12">
-                        <AvatarImage src="" alt="User profile" />
+                        <AvatarImage
+                            src={user?.image || ""}
+                            alt="User profile"
+                        />
                         <AvatarFallback className="bg-gradient-to-tr from-fuchsia-500 to-pink-400 text-white font-bold text-lg">
-                            U
+                            {userInitials}
                         </AvatarFallback>
                     </Avatar>
                     <div className="flex flex-col overflow-hidden">
                         <span className="text-lg font-medium truncate">
-                            Retardddd
+                            {user?.name || "User"}
                         </span>
                         <span className="text-sm text-muted-foreground truncate">
-                            bitchassssmfffffff@gmail.com
+                            {user?.email || "No email"}
                         </span>
                     </div>
                 </DropdownMenuItem>

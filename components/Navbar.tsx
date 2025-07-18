@@ -89,7 +89,7 @@ export function Navbar() {
                     {/* right section */}
                     <div className="flex items-center h-full px-4">
                         {session ? (
-                            <UserMenu />
+                            <UserMenu session={session} />
                         ) : (
                             <Button
                                 onClick={handleLogin}
@@ -146,7 +146,7 @@ export function Navbar() {
                     </div>
                     <div className="flex items-center h-full">
                         {session ? (
-                            <UserMenu />
+                            <UserMenu session={session} />
                         ) : (
                             <Button
                                 onClick={handleLogin}
