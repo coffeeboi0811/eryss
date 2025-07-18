@@ -5,10 +5,18 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { UserMenu } from "./UserMenu";
 import { useRouter, usePathname } from "next/navigation";
+import { useSession, signIn } from "next-auth/react";
+import { GoogleIcon } from "./icons/GoogleIcon";
 
 export function Navbar() {
     const router = useRouter();
     const pathname = usePathname();
+
+    const { data: session } = useSession();
+
+    const handleLogin = () => {
+        signIn("google");
+    };
 
     return (
         <>
@@ -80,7 +88,25 @@ export function Navbar() {
                     </div>
                     {/* right section */}
                     <div className="flex items-center h-full px-4">
-                        <UserMenu />
+                        {session ? (
+                            <UserMenu />
+                        ) : (
+                            <Button
+                                onClick={handleLogin}
+                                variant="outline"
+                                className="group border border-input/60 dark:border-input/40 bg-background hover:bg-accent/70 transition-colors duration-150 text-foreground font-medium rounded-full px-6 py-2 cursor-pointer flex items-center gap-2 shadow-sm focus-visible:ring-2 focus-visible:ring-ring/60"
+                            >
+                                <span className="flex items-center gap-2">
+                                    <GoogleIcon className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                                    <span className="hidden sm:inline">
+                                        Login with Google
+                                    </span>
+                                    <span className="inline sm:hidden">
+                                        Login
+                                    </span>
+                                </span>
+                            </Button>
+                        )}
                     </div>
                 </div>
             </nav>
@@ -119,7 +145,19 @@ export function Navbar() {
                         </form>
                     </div>
                     <div className="flex items-center h-full">
-                        <UserMenu />
+                        {session ? (
+                            <UserMenu />
+                        ) : (
+                            <Button
+                                onClick={handleLogin}
+                                size="sm"
+                                variant="outline"
+                                className="group border border-input/60 dark:border-input/40 bg-background hover:bg-accent/70 transition-colors duration-150 text-foreground font-medium rounded-full px-4 py-1 cursor-pointer text-xs flex items-center gap-1 shadow-sm focus-visible:ring-2 focus-visible:ring-ring/60"
+                            >
+                                <GoogleIcon className="w-4 h-4 group-hover:scale-110 transition-transform" />
+                                Login
+                            </Button>
+                        )}
                     </div>
                 </div>
             </nav>

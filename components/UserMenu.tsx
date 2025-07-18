@@ -20,6 +20,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
+import { signOut } from "next-auth/react";
 
 export function UserMenu() {
     const router = useRouter();
@@ -112,7 +113,10 @@ export function UserMenu() {
                     <Star className="w-4 h-4 text-yellow-500" />
                     Star on GitHub
                 </DropdownMenuItem>
-                <DropdownMenuItem className="flex items-center gap-2 text-red-600 cursor-pointer">
+                <DropdownMenuItem
+                    className="flex items-center gap-2 text-red-600 cursor-pointer"
+                    onClick={() => signOut()}
+                >
                     <LogOut className="w-4 h-4 text-red-600" />
                     Log out
                 </DropdownMenuItem>
