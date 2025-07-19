@@ -12,7 +12,7 @@ interface ImagePostCardProps {
     authorImg?: string;
     authorName?: string;
     className?: string;
-    index?: number;
+    index?: string;
 }
 
 export function ImagePostCard({

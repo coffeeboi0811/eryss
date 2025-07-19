@@ -4,7 +4,7 @@ import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Upload, X, AlertCircle, CheckCircle } from "lucide-react";
+import { Upload, X, AlertCircle, CheckCircle, Loader2 } from "lucide-react";
 import Image from "next/image";
 
 export default function CreateImage() {
@@ -371,7 +371,14 @@ export default function CreateImage() {
                                     isSubmitting
                                 }
                             >
-                                {isSubmitting ? "Creating..." : "Create"}
+                                {isSubmitting ? (
+                                    <>
+                                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                                        Creating...
+                                    </>
+                                ) : (
+                                    "Create"
+                                )}
                             </Button>
                             {(!selectedImage || !title.trim()) && (
                                 <p className="text-sm text-muted-foreground mt-2 text-center">
