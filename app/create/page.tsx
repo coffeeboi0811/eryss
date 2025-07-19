@@ -1,6 +1,8 @@
 import CreateImage from "@/components/CreateImage";
+import { requireAuth } from "@/lib/requireAuth";
 
-export default function CreateImagePage() {
+export default async function CreateImagePage() {
+    await requireAuth();
     return (
         <div className="bg-background">
             <CreateImage />

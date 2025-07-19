@@ -16,10 +16,23 @@ model User {
   image         String?
   bio           String?
 
+  images   Image[]
   accounts Account[]
   sessions Session[]
 
   @@map("users")
+}
+
+model Image {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  imageUrl    String   @map("image_url")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String @map("user_id")
 }
 
 model Account {
