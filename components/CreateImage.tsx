@@ -4,7 +4,7 @@ import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Upload, X, AlertCircle } from "lucide-react";
+import { Upload, X, AlertCircle, CheckCircle } from "lucide-react";
 import Image from "next/image";
 
 export default function CreateImage() {
@@ -16,8 +16,10 @@ export default function CreateImage() {
         title: "",
         description: "",
         image: "",
+        submit: "",
     });
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [submitSuccess, setSubmitSuccess] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const validateTitle = (value: string) => {
@@ -124,41 +126,69 @@ export default function CreateImage() {
         }
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
         const titleError = validateTitle(title);
         const descriptionError = validateDescription(description);
         const imageError = !selectedImage ? "Please select an image" : "";
-
         setErrors({
             title: titleError,
             description: descriptionError,
             image: imageError,
+            submit: "",
         });
-
         if (titleError || descriptionError || imageError) {
             return;
         }
 
         setIsSubmitting(true);
+        setSubmitSuccess(false);
 
-        // TODO: submit to api
-        console.log({
-            selectedImage,
-            title: title.trim(),
-            description: description.trim(),
-        });
-        setTimeout(() => {
-            setIsSubmitting(false);
+        try {
+            const response = await fetch("/api/images", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    title: title.trim(),
+                    description: description.trim() || undefined,
+                    imageBase64: selectedImage,
+                }),
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                console.log(data);
+                throw new Error(data.error || "Failed to create image");
+            }
+
+            setSubmitSuccess(true);
             setSelectedImage(null);
             setTitle("");
             setDescription("");
-            setErrors({ title: "", description: "", image: "" });
+            setErrors({ title: "", description: "", image: "", submit: "" });
             if (fileInputRef.current) {
                 fileInputRef.current.value = "";
             }
-        }, 1000);
+
+            setTimeout(() => {
+                setSubmitSuccess(false);
+            }, 3000);
+        } catch (error) {
+            console.error("Error creating image:", error);
+            setErrors((prev) => ({
+                ...prev,
+                submit:
+                    error instanceof Error
+                        ? error.message
+                        : "An unexpected error occurred. Please try again.",
+            }));
+        } finally {
+            setIsSubmitting(false);
+        }
     };
     return (
         <div className="max-w-6xl mx-auto px-4 py-8">
@@ -311,6 +341,24 @@ export default function CreateImage() {
                             </div>
                         </div>
                         <div className="pt-6">
+                            {errors.submit && (
+                                <div className="mb-4 bg-red-50 dark:bg-red-950 border border-red-200 dark:border-red-800 rounded-lg p-3">
+                                    <p className="text-sm text-red-600 dark:text-red-400 flex items-center gap-2">
+                                        <AlertCircle className="w-4 h-4" />
+                                        {errors.submit}
+                                    </p>
+                                </div>
+                            )}
+
+                            {submitSuccess && (
+                                <div className="mb-4 bg-green-50 dark:bg-green-950 border border-green-200 dark:border-green-800 rounded-lg p-3">
+                                    <p className="text-sm text-green-600 dark:text-green-400 flex items-center gap-2">
+                                        <CheckCircle className="w-4 h-4" />
+                                        Image uploaded successfully!
+                                    </p>
+                                </div>
+                            )}
+
                             <Button
                                 type="submit"
                                 className="w-full bg-primary text-primary-foreground hover:bg-primary/90 shadow font-semibold cursor-pointer"
