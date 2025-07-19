@@ -4,7 +4,7 @@ import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Upload, X } from "lucide-react";
+import { Upload, X, AlertCircle } from "lucide-react";
 import Image from "next/image";
 
 export default function CreateImage() {
@@ -12,17 +12,67 @@ export default function CreateImage() {
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
     const [isDragging, setIsDragging] = useState(false);
+    const [errors, setErrors] = useState({
+        title: "",
+        description: "",
+        image: "",
+    });
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
-    const handleFileSelect = (file: File) => {
-        if (file && file.type.startsWith("image/")) {
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                // reader.onload is a callback that runs after readAsDataURL() completes its async file reading.
-                setSelectedImage(e.target?.result as string);
-            };
-            reader.readAsDataURL(file);
+    const validateTitle = (value: string) => {
+        if (!value.trim()) {
+            return "Title is required";
         }
+        if (value.trim().length < 3) {
+            return "Title must be at least 3 characters";
+        }
+        if (value.trim().length > 100) {
+            return "Title must be under 100 characters";
+        }
+        return "";
+    };
+    const validateDescription = (value: string) => {
+        if (value.length > 300) {
+            return "Description must be under 300 characters";
+        }
+        return "";
+    };
+    const validateImageFile = (file: File) => {
+        const allowedTypes = [
+            "image/png",
+            "image/jpeg",
+            "image/jpg",
+            "image/webp",
+            "image/gif",
+        ];
+        const maxSizeInMB = 10;
+        const maxSizeInBytes = maxSizeInMB * 1024 * 1024;
+
+        if (!allowedTypes.includes(file.type)) {
+            return "Invalid image format. Only PNG, JPG, JPEG, WEBP, and GIF are allowed.";
+        }
+
+        if (file.size > maxSizeInBytes) {
+            return `Image too large. Maximum size is ${maxSizeInMB}MB.`;
+        }
+
+        return "";
+    };
+
+    const handleFileSelect = (file: File) => {
+        const imageError = validateImageFile(file);
+        if (imageError) {
+            setErrors((prev) => ({ ...prev, image: imageError }));
+            return;
+        }
+        setErrors((prev) => ({ ...prev, image: "" }));
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            setSelectedImage(e.target?.result as string);
+        };
+        reader.readAsDataURL(file);
     };
 
     const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -30,6 +80,23 @@ export default function CreateImage() {
         if (file) {
             handleFileSelect(file);
         }
+    };
+
+    const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        setTitle(value);
+
+        const error = validateTitle(value);
+        setErrors((prev) => ({ ...prev, title: error }));
+    };
+    const handleDescriptionChange = (
+        e: React.ChangeEvent<HTMLTextAreaElement>
+    ) => {
+        const value = e.target.value;
+        setDescription(value);
+
+        const error = validateDescription(value);
+        setErrors((prev) => ({ ...prev, description: error }));
     };
 
     const handleDragOver = (e: React.DragEvent) => {
@@ -51,6 +118,7 @@ export default function CreateImage() {
 
     const removeImage = () => {
         setSelectedImage(null);
+        setErrors((prev) => ({ ...prev, image: "" }));
         if (fileInputRef.current) {
             fileInputRef.current.value = "";
         }
@@ -58,7 +126,39 @@ export default function CreateImage() {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        console.log({ selectedImage, title, description });
+
+        const titleError = validateTitle(title);
+        const descriptionError = validateDescription(description);
+        const imageError = !selectedImage ? "Please select an image" : "";
+
+        setErrors({
+            title: titleError,
+            description: descriptionError,
+            image: imageError,
+        });
+
+        if (titleError || descriptionError || imageError) {
+            return;
+        }
+
+        setIsSubmitting(true);
+
+        // TODO: submit to api
+        console.log({
+            selectedImage,
+            title: title.trim(),
+            description: description.trim(),
+        });
+        setTimeout(() => {
+            setIsSubmitting(false);
+            setSelectedImage(null);
+            setTitle("");
+            setDescription("");
+            setErrors({ title: "", description: "", image: "" });
+            if (fileInputRef.current) {
+                fileInputRef.current.value = "";
+            }
+        }, 1000);
     };
     return (
         <div className="max-w-6xl mx-auto px-4 py-8">
@@ -94,6 +194,8 @@ export default function CreateImage() {
                                     <p className="text-sm text-muted-foreground text-center mb-6">
                                         Supported formats: PNG, JPG, JPEG, WEBP,
                                         GIF
+                                        <br />
+                                        Maximum size: 10MB
                                     </p>
                                 </div>
                                 <input
@@ -103,6 +205,14 @@ export default function CreateImage() {
                                     className="hidden"
                                     onChange={handleFileInputChange}
                                 />
+                                {errors.image && (
+                                    <div className="absolute bottom-4 left-4 right-4 bg-red-50 dark:bg-red-950 border border-red-200 dark:border-red-800 rounded-lg p-3">
+                                        <p className="text-sm text-red-600 dark:text-red-400 flex items-center gap-2">
+                                            <AlertCircle className="w-4 h-4" />
+                                            {errors.image}
+                                        </p>
+                                    </div>
+                                )}
                             </div>
                         ) : (
                             <div className="relative w-full">
@@ -136,18 +246,31 @@ export default function CreateImage() {
                                 htmlFor="title"
                                 className="block text-sm font-medium text-foreground mb-2"
                             >
-                                Title
+                                Title *
                             </label>
                             <Input
                                 id="title"
                                 type="text"
-                                placeholder="Add a title"
+                                placeholder="Add a title (3-100 characters)"
                                 value={title}
-                                onChange={(
-                                    e: React.ChangeEvent<HTMLInputElement>
-                                ) => setTitle(e.target.value)}
-                                className="w-full"
+                                onChange={handleTitleChange}
+                                className={`w-full ${
+                                    errors.title
+                                        ? "border-red-500 focus:border-red-500"
+                                        : ""
+                                }`}
                             />
+                            {errors.title && (
+                                <p className="text-sm text-red-600 dark:text-red-400 mt-1 flex items-center gap-1">
+                                    <AlertCircle className="w-3 h-3" />
+                                    {errors.title}
+                                </p>
+                            )}
+                            {!errors.title && title && (
+                                <p className="text-sm text-green-600 dark:text-green-400 mt-1">
+                                    ✓ Valid title length
+                                </p>
+                            )}
                         </div>
                         <div>
                             <label
@@ -158,22 +281,56 @@ export default function CreateImage() {
                             </label>
                             <Textarea
                                 id="description"
-                                placeholder="Add a detailed description"
+                                placeholder="Add a detailed description (optional, max 300 characters)"
                                 value={description}
-                                onChange={(
-                                    e: React.ChangeEvent<HTMLTextAreaElement>
-                                ) => setDescription(e.target.value)}
-                                className="w-full min-h-32 resize-none"
+                                onChange={handleDescriptionChange}
+                                className={`w-full min-h-32 resize-none ${
+                                    errors.description
+                                        ? "border-red-500 focus:border-red-500"
+                                        : ""
+                                }`}
                             />
+                            <div className="flex justify-between items-center mt-1">
+                                <div>
+                                    {errors.description && (
+                                        <p className="text-sm text-red-600 dark:text-red-400 flex items-center gap-1">
+                                            <AlertCircle className="w-3 h-3" />
+                                            {errors.description}
+                                        </p>
+                                    )}
+                                </div>
+                                <p
+                                    className={`text-sm ${
+                                        description.length > 300
+                                            ? "text-red-600 dark:text-red-400"
+                                            : "text-muted-foreground"
+                                    }`}
+                                >
+                                    {description.length}/300
+                                </p>
+                            </div>
                         </div>
                         <div className="pt-6">
                             <Button
                                 type="submit"
-                                className={`w-full bg-primary text-primary-foreground hover:bg-primary/90 shadow font-semibold`}
-                                disabled={!selectedImage || !title.trim()}
+                                className="w-full bg-primary text-primary-foreground hover:bg-primary/90 shadow font-semibold cursor-pointer"
+                                disabled={
+                                    !selectedImage ||
+                                    !title.trim() ||
+                                    errors.title !== "" ||
+                                    errors.description !== "" ||
+                                    errors.image !== "" ||
+                                    isSubmitting
+                                }
                             >
-                                Create
+                                {isSubmitting ? "Creating..." : "Create"}
                             </Button>
+                            {(!selectedImage || !title.trim()) && (
+                                <p className="text-sm text-muted-foreground mt-2 text-center">
+                                    Please select an image and add a title to
+                                    continue
+                                </p>
+                            )}
                         </div>
                     </div>
                 </div>
