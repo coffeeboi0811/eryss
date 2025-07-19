@@ -45,7 +45,7 @@ export function UserMenu({ session }: UserMenuProps) {
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
                 <Avatar className="cursor-pointer border-2 border-transparent hover:border-muted transition w-11 h-11">
-                    <AvatarImage src={user?.image || ""} alt="User profile" />
+                    <AvatarImage src={user?.image || ""} alt="Retard" />
                     <AvatarFallback className="bg-gradient-to-tr from-fuchsia-500 to-pink-400 text-white font-bold text-lg">
                         {userInitials}
                     </AvatarFallback>
@@ -57,17 +57,14 @@ export function UserMenu({ session }: UserMenuProps) {
                     onClick={() => router.push(`/user/${user?.id}`)}
                 >
                     <Avatar className="w-12 h-12">
-                        <AvatarImage
-                            src={user?.image || ""}
-                            alt="User profile"
-                        />
+                        <AvatarImage src={user?.image || ""} alt="Retard" />
                         <AvatarFallback className="bg-gradient-to-tr from-fuchsia-500 to-pink-400 text-white font-bold text-lg">
                             {userInitials}
                         </AvatarFallback>
                     </Avatar>
                     <div className="flex flex-col overflow-hidden">
                         <span className="text-lg font-medium truncate">
-                            {user?.name || "User"}
+                            {user?.name || "Retard"}
                         </span>
                         <span className="text-sm text-muted-foreground truncate">
                             {user?.email || "No email"}

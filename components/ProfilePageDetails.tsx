@@ -37,7 +37,7 @@ export default function ProfilePageDetails({ user }: ProfilePageDetailsProps) {
                 <Avatar className="w-32 h-32 cursor-pointer shadow-lg">
                     <AvatarImage
                         src={user.image || ""}
-                        alt={user.name || "User"}
+                        alt={user.name || "Retard"}
                     />
                     <AvatarFallback className="bg-muted text-muted-foreground text-3xl">
                         {userInitials}
@@ -46,7 +46,7 @@ export default function ProfilePageDetails({ user }: ProfilePageDetailsProps) {
                 <div className="space-y-4">
                     <div className="space-y-2">
                         <h1 className="text-4xl font-bold text-foreground">
-                            {user.name || "User"}
+                            {user.name || "Retard"}
                         </h1>
                         <div className="flex items-center justify-center gap-2 text-muted-foreground">
                             <span className="text-sm font-semibold">
