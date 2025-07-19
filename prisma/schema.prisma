@@ -33,6 +33,8 @@ model Image {
 
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String @map("user_id")
+
+  @@map("images")
 }
 
 model Account {
