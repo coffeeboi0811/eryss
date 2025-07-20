@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Calendar } from "lucide-react";
+import { useSession } from "next-auth/react";
 
 interface User {
     id: string;
@@ -29,7 +30,9 @@ export default function ProfilePageDetails({ user }: ProfilePageDetailsProps) {
             ?.trim()
             .toLowerCase()
             .replace(/\s+/g, "_")
-            .replace(/[^a-z0-9_]/g, "") || "retardeduser";
+            .replace(/[^a-z0-9_]/g, "") || "user";
+
+    const { data: session } = useSession();
 
     return (
         <div className="flex flex-col items-center justify-center min-h-[50vh] bg-muted/30 px-6 py-12">
@@ -37,7 +40,7 @@ export default function ProfilePageDetails({ user }: ProfilePageDetailsProps) {
                 <Avatar className="w-32 h-32 cursor-pointer shadow-lg">
                     <AvatarImage
                         src={user.image || ""}
-                        alt={user.name || "Retard"}
+                        alt={user.name || "User Avatar"}
                     />
                     <AvatarFallback className="bg-muted text-muted-foreground text-3xl">
                         {userInitials}
@@ -46,7 +49,7 @@ export default function ProfilePageDetails({ user }: ProfilePageDetailsProps) {
                 <div className="space-y-4">
                     <div className="space-y-2">
                         <h1 className="text-4xl font-bold text-foreground">
-                            {user.name || "Retard"}
+                            {user.name || "Unknown User"}
                         </h1>
                         <div className="flex items-center justify-center gap-2 text-muted-foreground">
                             <span className="text-sm font-semibold">
@@ -55,7 +58,7 @@ export default function ProfilePageDetails({ user }: ProfilePageDetailsProps) {
                         </div>
                     </div>
                     <p className="text-foreground text-base leading-relaxed max-w-md mx-auto">
-                        {user.bio || "I am retarded"}
+                        {user.bio || "No bio available"}
                     </p>
                     <div className="flex items-center justify-center gap-2 text-muted-foreground text-sm">
                         <Calendar className="w-3 h-3" />
@@ -72,9 +75,15 @@ export default function ProfilePageDetails({ user }: ProfilePageDetailsProps) {
                     >
                         Share
                     </Button>
-                    <Button className="bg-primary hover:bg-primary/90 text-primary-foreground cursor-pointer">
-                        Edit profile
-                    </Button>
+                    {session?.user.id === user.id ? (
+                        <Button className="bg-primary hover:bg-primary/90 text-primary-foreground cursor-pointer">
+                            Edit profile
+                        </Button>
+                    ) : (
+                        <Button className="bg-primary hover:bg-primary/90 text-primary-foreground cursor-pointer">
+                            Follow
+                        </Button>
+                    )}
                 </div>
             </div>
         </div>
