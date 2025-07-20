@@ -49,6 +49,11 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
                     image: true,
                 },
             },
+            _count: {
+                select: {
+                    likes: true,
+                },
+            },
         },
     });
 
@@ -120,6 +125,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
                                         initialLiked={userLikes.includes(
                                             image.id
                                         )}
+                                        likesCount={image._count.likes}
                                     />
                                 ))}
                             </ResponsiveMasonryGrid>

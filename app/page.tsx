@@ -16,6 +16,11 @@ export default async function Home() {
                     image: true,
                 },
             },
+            _count: {
+                select: {
+                    likes: true,
+                },
+            },
         },
     });
 
@@ -44,6 +49,7 @@ export default async function Home() {
                         authorName={image.user.name || undefined}
                         index={image.id}
                         initialLiked={userLikes.includes(image.id)}
+                        likesCount={image._count.likes}
                     />
                 ))}
             </ResponsiveMasonryGrid>

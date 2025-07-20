@@ -29,6 +29,11 @@ export default async function ImageDetailPage({
                     image: true,
                 },
             },
+            _count: {
+                select: {
+                    likes: true,
+                },
+            },
         },
     });
 
@@ -63,6 +68,11 @@ export default async function ImageDetailPage({
                     id: true,
                     name: true,
                     image: true,
+                },
+            },
+            _count: {
+                select: {
+                    likes: true,
                 },
             },
         },
@@ -101,6 +111,7 @@ export default async function ImageDetailPage({
                 title: image.title,
                 description: image.description || undefined,
                 createdAt: image.createdAt,
+                likesCount: image._count.likes,
             }}
             relatedImages={shuffledRelatedImages.map((img) => ({
                 id: img.id,
@@ -108,6 +119,7 @@ export default async function ImageDetailPage({
                 authorImg: img.user?.image || undefined,
                 authorName: img.user?.name || undefined,
                 initialLiked: relatedImageLikes.includes(img.id),
+                likesCount: img._count.likes,
             }))}
             initialLiked={isLiked}
         />

@@ -11,6 +11,7 @@ interface ImageDetailRightPanelProps {
         authorImg?: string;
         authorName?: string;
         initialLiked?: boolean;
+        likesCount?: number;
     }>;
 }
 
@@ -40,6 +41,7 @@ export function ImageDetailRightPanel({
                             authorName={image.authorName}
                             index={image.id}
                             initialLiked={image.initialLiked}
+                            likesCount={image.likesCount}
                         />
                     ))}
                 </Masonry>

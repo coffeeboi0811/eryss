@@ -16,6 +16,7 @@ interface ImageDetailPageWrapperProps {
         title?: string;
         description?: string;
         createdAt?: Date;
+        likesCount?: number;
     };
     relatedImages: Array<{
         id: string;
@@ -23,6 +24,7 @@ interface ImageDetailPageWrapperProps {
         authorImg?: string;
         authorName?: string;
         initialLiked?: boolean;
+        likesCount?: number;
     }>;
     initialLiked?: boolean;
 }
@@ -70,6 +72,7 @@ export function ImageDetailPageWrapper({
                         description={imageData.description}
                         createdAt={imageData.createdAt}
                         initialLiked={initialLiked}
+                        likesCount={imageData.likesCount}
                     />
                 </div>
             </div>

@@ -15,6 +15,7 @@ interface ImageDetailLeftPanelProps {
     description?: string;
     createdAt?: Date;
     initialLiked?: boolean;
+    likesCount?: number;
 }
 
 export function ImageDetailLeftPanel({
@@ -26,18 +27,24 @@ export function ImageDetailLeftPanel({
     description,
     createdAt,
     initialLiked = false,
+    likesCount = 0,
 }: ImageDetailLeftPanelProps) {
     const [isLiked, setIsLiked] = useState(initialLiked);
     const [isLiking, setIsLiking] = useState(false);
+    const [currentLikesCount, setCurrentLikesCount] = useState(likesCount);
 
     const handleLike = async () => {
         if (isLiking) return;
 
         setIsLiking(true);
         const originalLiked = isLiked;
+        const originalCount = currentLikesCount;
 
         // optimistic update
         setIsLiked(!isLiked);
+        setCurrentLikesCount(
+            isLiked ? currentLikesCount - 1 : currentLikesCount + 1
+        );
 
         try {
             const response = await fetch("/api/like", {
@@ -56,10 +63,15 @@ export function ImageDetailLeftPanel({
 
             const data = await response.json();
             setIsLiked(data.liked);
+            // update likes count based on the response
+            setCurrentLikesCount(
+                data.liked ? originalCount + 1 : originalCount - 1
+            );
         } catch (error) {
             console.error("Error liking image:", error);
             // revert optimistic update
             setIsLiked(originalLiked);
+            setCurrentLikesCount(originalCount);
         } finally {
             setIsLiking(false);
         }
@@ -131,6 +143,14 @@ export function ImageDetailLeftPanel({
                         </p>
                     )}
                     <div className="w-full border-t border-border mb-6" />
+                    {currentLikesCount > 0 && (
+                        <div className="mb-4">
+                            <span className="text-sm text-muted-foreground font-medium">
+                                {currentLikesCount}{" "}
+                                {currentLikesCount === 1 ? "like" : "likes"}
+                            </span>
+                        </div>
+                    )}
                     <div className="flex gap-3 mb-8 md:mb-0 overflow-x-auto">
                         <Button
                             className={`flex-1 shadow cursor-pointer ${

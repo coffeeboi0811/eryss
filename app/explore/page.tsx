@@ -19,6 +19,11 @@ export default async function ExplorePage() {
                     image: true,
                 },
             },
+            _count: {
+                select: {
+                    likes: true,
+                },
+            },
         },
     });
 
@@ -72,6 +77,7 @@ export default async function ExplorePage() {
                                     authorName={image.user.name || undefined}
                                     index={image.id}
                                     initialLiked={userLikes.includes(image.id)}
+                                    likesCount={image._count.likes}
                                 />
                             ))}
                         </ResponsiveMasonryGrid>
@@ -91,6 +97,7 @@ export default async function ExplorePage() {
                                     authorName={image.user.name || undefined}
                                     index={image.id}
                                     initialLiked={userLikes.includes(image.id)}
+                                    likesCount={image._count.likes}
                                 />
                             ))}
                         </ResponsiveMasonryGrid>

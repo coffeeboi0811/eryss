@@ -46,6 +46,11 @@ export default async function UserProfilePage({
                     image: true,
                 },
             },
+            _count: {
+                select: {
+                    likes: true,
+                },
+            },
         },
     });
 
@@ -74,6 +79,7 @@ export default async function UserProfilePage({
                             authorName={image.user.name || undefined}
                             index={image.id}
                             initialLiked={userLikes.includes(image.id)}
+                            likesCount={image._count.likes}
                         />
                     ))}
                 </ResponsiveMasonryGrid>

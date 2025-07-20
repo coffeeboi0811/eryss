@@ -15,6 +15,7 @@ interface ImagePostCardProps {
     className?: string;
     index?: string;
     initialLiked?: boolean;
+    likesCount?: number;
 }
 
 export function ImagePostCard({
@@ -24,10 +25,12 @@ export function ImagePostCard({
     className,
     index,
     initialLiked = false,
+    likesCount = 0,
 }: ImagePostCardProps) {
     const router = useRouter();
     const [isLiked, setIsLiked] = useState(initialLiked);
     const [isLiking, setIsLiking] = useState(false);
+    const [currentLikesCount, setCurrentLikesCount] = useState(likesCount);
 
     const handleImageClick = () => {
         if (index !== undefined) {
@@ -42,9 +45,13 @@ export function ImagePostCard({
 
         setIsLiking(true);
         const originalLiked = isLiked;
+        const originalCount = currentLikesCount;
 
         // optimistic update
         setIsLiked(!isLiked);
+        setCurrentLikesCount(
+            isLiked ? currentLikesCount - 1 : currentLikesCount + 1
+        );
 
         try {
             const response = await fetch("/api/like", {
@@ -63,10 +70,15 @@ export function ImagePostCard({
 
             const data = await response.json();
             setIsLiked(data.liked);
+            // update likes count based on the response
+            setCurrentLikesCount(
+                data.liked ? originalCount + 1 : originalCount - 1
+            );
         } catch (error) {
             console.error("Error liking image:", error);
             // revert optimistic update
             setIsLiked(originalLiked);
+            setCurrentLikesCount(originalCount);
         } finally {
             setIsLiking(false);
         }
@@ -90,15 +102,23 @@ export function ImagePostCard({
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end">
                 <div className="p-3 flex items-end justify-between">
-                    <Avatar className="w-8 h-8 border-2 border-white cursor-pointer">
-                        {authorImg ? (
-                            <AvatarImage src={authorImg} alt={authorName} />
-                        ) : (
-                            <AvatarFallback className="bg-white/20 text-white text-xs">
-                                {authorName?.[0] || "A"}
-                            </AvatarFallback>
+                    <div className="flex items-center gap-2">
+                        <Avatar className="w-8 h-8 border-2 border-white cursor-pointer">
+                            {authorImg ? (
+                                <AvatarImage src={authorImg} alt={authorName} />
+                            ) : (
+                                <AvatarFallback className="bg-white/20 text-white text-xs">
+                                    {authorName?.[0] || "A"}
+                                </AvatarFallback>
+                            )}
+                        </Avatar>
+                        {currentLikesCount > 0 && (
+                            <span className="text-white text-xs font-medium bg-black/30 px-2 py-1 rounded-full">
+                                {currentLikesCount}{" "}
+                                {currentLikesCount === 1 ? "like" : "likes"}
+                            </span>
                         )}
-                    </Avatar>
+                    </div>
                     <div className="flex gap-1">
                         <Button
                             size="sm"
