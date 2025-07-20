@@ -25,10 +25,31 @@ export default async function LikedImagesPage() {
                             image: true,
                         },
                     },
+                    _count: {
+                        select: {
+                            likes: true,
+                        },
+                    },
                 },
             },
         },
     });
+
+    // fetch user's saves for these liked images
+    const likedImageIds = likedImages.map((like) => like.image.id);
+    const userSaves = await prisma.save.findMany({
+        where: {
+            userId: session.user.id,
+            imageId: {
+                in: likedImageIds,
+            },
+        },
+        select: {
+            imageId: true,
+        },
+    });
+    const savedImageIds = userSaves.map((save) => save.imageId);
+
     return (
         <div className="min-h-screen bg-background w-full">
             <div className="w-full px-4 py-8">
@@ -49,6 +70,10 @@ export default async function LikedImagesPage() {
                             authorName={image.image.user.name || undefined}
                             index={image.image.id}
                             initialLiked={true}
+                            initialSaved={savedImageIds.includes(
+                                image.image.id
+                            )}
+                            likesCount={image.image._count.likes}
                         />
                     ))}
                 </ResponsiveMasonryGrid>

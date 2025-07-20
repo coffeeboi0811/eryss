@@ -28,6 +28,7 @@ export default async function ExplorePage() {
     });
 
     let userLikes: string[] = [];
+    let userSaves: string[] = [];
     if (session?.user?.id) {
         const likes = await prisma.like.findMany({
             where: {
@@ -38,6 +39,16 @@ export default async function ExplorePage() {
             },
         });
         userLikes = likes.map((like) => like.imageId);
+
+        const saves = await prisma.save.findMany({
+            where: {
+                userId: session.user.id,
+            },
+            select: {
+                imageId: true,
+            },
+        });
+        userSaves = saves.map((save) => save.imageId);
     }
     return (
         <div className="min-h-screen bg-background w-full">
@@ -77,6 +88,7 @@ export default async function ExplorePage() {
                                     authorName={image.user.name || undefined}
                                     index={image.id}
                                     initialLiked={userLikes.includes(image.id)}
+                                    initialSaved={userSaves.includes(image.id)}
                                     likesCount={image._count.likes}
                                 />
                             ))}
@@ -97,6 +109,7 @@ export default async function ExplorePage() {
                                     authorName={image.user.name || undefined}
                                     index={image.id}
                                     initialLiked={userLikes.includes(image.id)}
+                                    initialSaved={userSaves.includes(image.id)}
                                     likesCount={image._count.likes}
                                 />
                             ))}
