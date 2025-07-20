@@ -9,12 +9,18 @@ interface ImageDetailLeftPanelProps {
     imageSrc: string;
     authorImg?: string;
     authorName?: string;
+    title?: string;
+    description?: string;
+    createdAt?: Date;
 }
 
 export function ImageDetailLeftPanel({
     imageSrc,
     authorImg,
     authorName,
+    title,
+    description,
+    createdAt,
 }: ImageDetailLeftPanelProps) {
     return (
         <div className="flex flex-col h-full bg-muted/30">
@@ -66,18 +72,22 @@ export function ImageDetailLeftPanel({
                 <div className="w-full border-t border-border" />
                 <div className="px-6 pt-6 pb-6">
                     <h1 className="text-3xl font-bold text-foreground mb-3 leading-tight">
-                        Beautiful Image
+                        {title || "Untitled"}
                     </h1>
                     <div className="flex items-center gap-2 mb-4">
                         <Clock className="w-3 h-3 text-muted-foreground" />
                         <span className="text-xs text-muted-foreground font-medium">
-                            Posted 3 days ago
+                            Posted{" "}
+                            {createdAt
+                                ? new Date(createdAt).toLocaleDateString()
+                                : "recently"}
                         </span>
                     </div>
-                    <p className="text-base text-foreground leading-relaxed mb-6">
-                        A stunning piece of visual art that captures the essence
-                        of creativity and imagination.
-                    </p>
+                    {description && (
+                        <p className="text-base text-foreground leading-relaxed mb-6">
+                            {description}
+                        </p>
+                    )}
                     <div className="w-full border-t border-border mb-6" />
                     <div className="flex gap-3 mb-8 md:mb-0 overflow-x-auto">
                         <Button className="flex-1 bg-red-600 hover:bg-red-700 text-white shadow cursor-pointer">

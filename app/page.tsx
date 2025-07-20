@@ -21,8 +21,8 @@ export default async function Home() {
         <main className="w-full px-4 py-8">
             <ResponsiveMasonryGrid>
                 {images.map((image) => (
-                    <ImagePostCard 
-                        key={image.id} 
+                    <ImagePostCard
+                        key={image.id}
                         imageSrc={image.imageUrl}
                         authorImg={image.user.image || undefined}
                         authorName={image.user.name || undefined}

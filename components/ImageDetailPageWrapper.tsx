@@ -12,13 +12,12 @@ interface ImageDetailPageWrapperProps {
         imageSrc: string;
         authorImg?: string;
         authorName?: string;
+        title?: string;
+        description?: string;
+        createdAt?: Date;
     };
     relatedImages: Array<{
-        imageSrc: string;
-        authorImg?: string;
-        authorName?: string;
-    }>;
-    imagePosts: Array<{
+        id: string;
         imageSrc: string;
         authorImg?: string;
         authorName?: string;
@@ -28,7 +27,6 @@ interface ImageDetailPageWrapperProps {
 export function ImageDetailPageWrapper({
     imageData,
     relatedImages,
-    imagePosts,
 }: ImageDetailPageWrapperProps) {
     const router = useRouter();
 
@@ -62,16 +60,16 @@ export function ImageDetailPageWrapper({
                         imageSrc={imageData.imageSrc}
                         authorImg={imageData.authorImg}
                         authorName={imageData.authorName}
+                        title={imageData.title}
+                        description={imageData.description}
+                        createdAt={imageData.createdAt}
                     />
                 </div>
             </div>
             {/* right panel - hidden on mobile */}
             <div className="hidden md:block w-2/5 overflow-y-auto panel-scrollbar scroll-smooth">
                 <div className="pb-12 px-4">
-                    <ImageDetailRightPanel
-                        relatedImages={relatedImages}
-                        imagePosts={imagePosts}
-                    />
+                    <ImageDetailRightPanel relatedImages={relatedImages} />
                 </div>
             </div>
         </div>

@@ -6,11 +6,7 @@ import "@/components/masonry.css";
 
 interface ImageDetailRightPanelProps {
     relatedImages: Array<{
-        imageSrc: string;
-        authorImg?: string;
-        authorName?: string;
-    }>;
-    imagePosts: Array<{
+        id: string;
         imageSrc: string;
         authorImg?: string;
         authorName?: string;
@@ -19,7 +15,6 @@ interface ImageDetailRightPanelProps {
 
 export function ImageDetailRightPanel({
     relatedImages,
-    imagePosts,
 }: ImageDetailRightPanelProps) {
     return (
         <div className="bg-background border-l border-border">
@@ -36,13 +31,13 @@ export function ImageDetailRightPanel({
                     className="masonry-grid"
                     columnClassName="masonry-grid_column"
                 >
-                    {relatedImages.map((post, index) => (
+                    {relatedImages.map((post) => (
                         <ImagePostCard
-                            key={index}
+                            key={post.id}
                             imageSrc={post.imageSrc}
                             authorImg={post.authorImg}
                             authorName={post.authorName}
-                            index={imagePosts.findIndex((p) => p === post)}
+                            index={post.id}
                         />
                     ))}
                 </Masonry>
