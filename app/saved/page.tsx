@@ -1,8 +1,10 @@
 import { ResponsiveMasonryGrid } from "@/components/ResponsiveMasonryGrid";
 import { ImagePostCard } from "@/components/ImagePostCard";
 import { imagePosts } from "@/lib/imagePostsData";
+import { requireAuth } from "@/lib/requireAuth";
 
-export default function SavedImagesPage() {
+export default async function SavedImagesPage() {
+    await requireAuth();
     return (
         <div className="min-h-screen bg-background w-full">
             <div className="w-full px-4 py-8">
