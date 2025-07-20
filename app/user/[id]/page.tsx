@@ -1,7 +1,6 @@
 import ProfilePageDetails from "@/components/ProfilePageDetails";
 import { ResponsiveMasonryGrid } from "@/components/ResponsiveMasonryGrid";
 import { ImagePostCard } from "@/components/ImagePostCard";
-import { imagePosts } from "@/lib/imagePostsData";
 import prisma from "@/lib/prisma";
 import { notFound } from "next/navigation";
 
@@ -24,16 +23,41 @@ export default async function UserProfilePage({
             emailVerified: true,
         },
     });
+
     if (!user) {
         notFound();
     }
+
+    const userImages = await prisma.image.findMany({
+        where: {
+            userId: user.id,
+        },
+        orderBy: {
+            createdAt: "desc",
+        },
+        include: {
+            user: {
+                select: {
+                    id: true,
+                    name: true,
+                    image: true,
+                },
+            },
+        },
+    });
     return (
         <div>
             <ProfilePageDetails user={user} />
             <main className="w-full px-4 py-8">
                 <ResponsiveMasonryGrid>
-                    {imagePosts.map((post, i) => (
-                        <ImagePostCard key={i} {...post} index={i} />
+                    {userImages.map((image) => (
+                        <ImagePostCard
+                            key={image.id}
+                            imageSrc={image.imageUrl}
+                            authorImg={image.user.image || undefined}
+                            authorName={image.user.name || undefined}
+                            index={image.id}
+                        />
                     ))}
                 </ResponsiveMasonryGrid>
             </main>
