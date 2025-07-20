@@ -1,10 +1,34 @@
 import { ResponsiveMasonryGrid } from "@/components/ResponsiveMasonryGrid";
 import { ImagePostCard } from "@/components/ImagePostCard";
-import { imagePosts } from "@/lib/imagePostsData";
 import { requireAuth } from "@/lib/requireAuth";
+import prisma from "@/lib/prisma";
 
 export default async function SavedImagesPage() {
-    await requireAuth();
+    const session = await requireAuth();
+
+    const savedImages = await prisma.save.findMany({
+        where: {
+            userId: session.user.id,
+        },
+        orderBy: {
+            createdAt: "desc",
+        },
+        include: {
+            image: {
+                select: {
+                    id: true,
+                    imageUrl: true,
+                    user: {
+                        select: {
+                            id: true,
+                            name: true,
+                            image: true,
+                        },
+                    },
+                },
+            },
+        },
+    });
     return (
         <div className="min-h-screen bg-background w-full">
             <div className="w-full px-4 py-8">
@@ -17,14 +41,14 @@ export default async function SavedImagesPage() {
                     </p>
                 </div>
                 <ResponsiveMasonryGrid>
-                    {imagePosts.map((post, index) => (
+                    {savedImages.map((image) => (
                         <ImagePostCard
-                            key={`now-${index}`}
-                            imageSrc={post.imageSrc}
-                            authorImg={post.authorImg}
-                            authorName={post.authorName}
-                            index={index.toString()}
-                            initialLiked={false}
+                            key={image.image.id}
+                            imageSrc={image.image.imageUrl}
+                            authorImg={image.image.user.image || undefined}
+                            authorName={image.image.user.name || undefined}
+                            index={image.image.id}
+                            initialSaved={true}
                         />
                     ))}
                 </ResponsiveMasonryGrid>

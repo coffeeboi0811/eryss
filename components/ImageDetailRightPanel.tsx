@@ -11,6 +11,7 @@ interface ImageDetailRightPanelProps {
         authorImg?: string;
         authorName?: string;
         initialLiked?: boolean;
+        initialSaved?: boolean;
         likesCount?: number;
     }>;
 }
@@ -41,6 +42,7 @@ export function ImageDetailRightPanel({
                             authorName={image.authorName}
                             index={image.id}
                             initialLiked={image.initialLiked}
+                            initialSaved={image.initialSaved}
                             likesCount={image.likesCount}
                         />
                     ))}

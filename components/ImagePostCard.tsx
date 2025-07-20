@@ -15,6 +15,7 @@ interface ImagePostCardProps {
     className?: string;
     index?: string;
     initialLiked?: boolean;
+    initialSaved?: boolean;
     likesCount?: number;
 }
 
@@ -25,11 +26,14 @@ export function ImagePostCard({
     className,
     index,
     initialLiked = false,
+    initialSaved = false,
     likesCount = 0,
 }: ImagePostCardProps) {
     const router = useRouter();
     const [isLiked, setIsLiked] = useState(initialLiked);
+    const [isSaved, setIsSaved] = useState(initialSaved);
     const [isLiking, setIsLiking] = useState(false);
+    const [isSaving, setIsSaving] = useState(false);
     const [currentLikesCount, setCurrentLikesCount] = useState(likesCount);
 
     const handleImageClick = () => {
@@ -81,6 +85,42 @@ export function ImagePostCard({
             setCurrentLikesCount(originalCount);
         } finally {
             setIsLiking(false);
+        }
+    };
+
+    const handleSave = async (e: React.MouseEvent) => {
+        e.stopPropagation(); // prevent triggering image click
+        if (isSaving || !index) return;
+
+        setIsSaving(true);
+        const originalSaved = isSaved;
+
+        // optimistic update
+        setIsSaved(!isSaved);
+
+        try {
+            const response = await fetch("/api/save", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    imageId: index,
+                }),
+            });
+
+            if (!response.ok) {
+                throw new Error("Failed to save image");
+            }
+
+            const data = await response.json();
+            setIsSaved(data.saved);
+        } catch (error) {
+            console.error("Error saving image:", error);
+            // revert optimistic update
+            setIsSaved(originalSaved);
+        } finally {
+            setIsSaving(false);
         }
     };
 
@@ -140,9 +180,19 @@ export function ImagePostCard({
                         <Button
                             size="sm"
                             variant="ghost"
-                            className="text-white hover:bg-blue-500/30 hover:text-blue-400 h-8 w-8 p-0 cursor-pointer transition-all duration-200"
+                            className={`h-8 w-8 p-0 cursor-pointer transition-all duration-200 ${
+                                isSaved
+                                    ? "text-blue-400 hover:bg-blue-500/30"
+                                    : "text-white hover:bg-blue-500/30 hover:text-blue-400"
+                            }`}
+                            onClick={handleSave}
+                            disabled={isSaving}
                         >
-                            <Bookmark className="w-4 h-4" />
+                            <Bookmark
+                                className={`w-4 h-4 ${
+                                    isSaved ? "fill-current" : ""
+                                }`}
+                            />
                         </Button>
                         <Button
                             size="sm"

@@ -15,6 +15,7 @@ interface ImageDetailLeftPanelProps {
     description?: string;
     createdAt?: Date;
     initialLiked?: boolean;
+    initialSaved?: boolean;
     likesCount?: number;
 }
 
@@ -27,10 +28,13 @@ export function ImageDetailLeftPanel({
     description,
     createdAt,
     initialLiked = false,
+    initialSaved = false,
     likesCount = 0,
 }: ImageDetailLeftPanelProps) {
     const [isLiked, setIsLiked] = useState(initialLiked);
+    const [isSaved, setIsSaved] = useState(initialSaved);
     const [isLiking, setIsLiking] = useState(false);
+    const [isSaving, setIsSaving] = useState(false);
     const [currentLikesCount, setCurrentLikesCount] = useState(likesCount);
 
     const handleLike = async () => {
@@ -74,6 +78,41 @@ export function ImageDetailLeftPanel({
             setCurrentLikesCount(originalCount);
         } finally {
             setIsLiking(false);
+        }
+    };
+
+    const handleSave = async () => {
+        if (isSaving) return;
+
+        setIsSaving(true);
+        const originalSaved = isSaved;
+
+        // optimistic update
+        setIsSaved(!isSaved);
+
+        try {
+            const response = await fetch("/api/save", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    imageId: imageId,
+                }),
+            });
+
+            if (!response.ok) {
+                throw new Error("Failed to save image");
+            }
+
+            const data = await response.json();
+            setIsSaved(data.saved);
+        } catch (error) {
+            console.error("Error saving image:", error);
+            // revert optimistic update
+            setIsSaved(originalSaved);
+        } finally {
+            setIsSaving(false);
         }
     };
     return (
@@ -181,11 +220,20 @@ export function ImageDetailLeftPanel({
                             Share
                         </Button>
                         <Button
-                            variant="outline"
-                            className="flex-1 shadow-sm cursor-pointer"
+                            className={`flex-1 shadow cursor-pointer ${
+                                isSaved
+                                    ? "bg-blue-600 hover:bg-blue-700 text-white"
+                                    : "bg-muted hover:bg-blue-600 hover:text-white text-foreground"
+                            }`}
+                            onClick={handleSave}
+                            disabled={isSaving}
                         >
-                            <Bookmark className="w-4 h-4 mr-2" />
-                            Save
+                            <Bookmark
+                                className={`w-4 h-4 mr-2 ${
+                                    isSaved ? "fill-current" : ""
+                                }`}
+                            />
+                            {isSaving ? "..." : isSaved ? "Saved" : "Save"}
                         </Button>
                         <Button
                             variant="outline"

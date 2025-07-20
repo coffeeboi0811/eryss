@@ -41,8 +41,9 @@ export default async function ImageDetailPage({
         notFound();
     }
 
-    // check if current user has liked this image
+    // check if current user has liked and saved this image
     let isLiked = false;
+    let isSaved = false;
     if (session?.user?.id) {
         const likeRecord = await prisma.like.findUnique({
             where: {
@@ -53,6 +54,17 @@ export default async function ImageDetailPage({
             },
         });
         isLiked = !!likeRecord;
+
+        const saveRecord = await prisma.save.findUnique({
+            where: {
+                userId_imageId: {
+                    userId: session.user.id,
+                    imageId: image.id,
+                },
+            },
+        });
+
+        isSaved = !!saveRecord;
     }
 
     // related images (excluding current image)
@@ -85,6 +97,7 @@ export default async function ImageDetailPage({
     const shuffledRelatedImages = shuffleArray(relatedImages);
 
     let relatedImageLikes: string[] = [];
+    let relatedImageSaves: string[] = [];
     if (session?.user?.id) {
         const relatedImageIds = shuffledRelatedImages.map((img) => img.id);
         const likes = await prisma.like.findMany({
@@ -99,6 +112,19 @@ export default async function ImageDetailPage({
             },
         });
         relatedImageLikes = likes.map((like) => like.imageId);
+
+        const saves = await prisma.save.findMany({
+            where: {
+                userId: session.user.id,
+                imageId: {
+                    in: relatedImageIds,
+                },
+            },
+            select: {
+                imageId: true,
+            },
+        });
+        relatedImageSaves = saves.map((save) => save.imageId);
     }
 
     return (
@@ -119,9 +145,11 @@ export default async function ImageDetailPage({
                 authorImg: img.user?.image || undefined,
                 authorName: img.user?.name || undefined,
                 initialLiked: relatedImageLikes.includes(img.id),
+                initialSaved: relatedImageSaves.includes(img.id),
                 likesCount: img._count.likes,
             }))}
             initialLiked={isLiked}
+            initialSaved={isSaved}
         />
     );
 }

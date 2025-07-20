@@ -25,6 +25,7 @@ export default async function Home() {
     });
 
     let userLikes: string[] = [];
+    let userSaves: string[] = [];
     if (session?.user?.id) {
         const likes = await prisma.like.findMany({
             where: {
@@ -35,6 +36,16 @@ export default async function Home() {
             },
         });
         userLikes = likes.map((like) => like.imageId);
+
+        const saves = await prisma.save.findMany({
+            where: {
+                userId: session.user.id,
+            },
+            select: {
+                imageId: true,
+            },
+        });
+        userSaves = saves.map((save) => save.imageId);
     }
 
     const shuffledImages = shuffleArray(images);
@@ -49,6 +60,7 @@ export default async function Home() {
                         authorName={image.user.name || undefined}
                         index={image.id}
                         initialLiked={userLikes.includes(image.id)}
+                        initialSaved={userSaves.includes(image.id)}
                         likesCount={image._count.likes}
                     />
                 ))}

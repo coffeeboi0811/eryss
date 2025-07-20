@@ -73,6 +73,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
     });
 
     let userLikes: string[] = [];
+    let userSaves: string[] = [];
     if (session?.user?.id) {
         const likes = await prisma.like.findMany({
             where: {
@@ -83,6 +84,16 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
             },
         });
         userLikes = likes.map((like) => like.imageId);
+
+        const saves = await prisma.save.findMany({
+            where: {
+                userId: session.user.id,
+            },
+            select: {
+                imageId: true,
+            },
+        });
+        userSaves = saves.map((save) => save.imageId);
     }
 
     return (
@@ -123,6 +134,9 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
                                         }
                                         index={image.id}
                                         initialLiked={userLikes.includes(
+                                            image.id
+                                        )}
+                                        initialSaved={userSaves.includes(
                                             image.id
                                         )}
                                         likesCount={image._count.likes}
