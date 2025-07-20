@@ -27,6 +27,34 @@ export default async function ExplorePage() {
         },
     });
 
+    const trendingImages = await prisma.image.findMany({
+        orderBy: [
+            {
+                likes: {
+                    _count: "desc",
+                },
+            },
+            {
+                createdAt: "desc",
+            },
+        ],
+        take: 50, // limit to top 50 trending images
+        include: {
+            user: {
+                select: {
+                    id: true,
+                    name: true,
+                    image: true,
+                },
+            },
+            _count: {
+                select: {
+                    likes: true,
+                },
+            },
+        },
+    });
+
     let userLikes: string[] = [];
     let userSaves: string[] = [];
     if (session?.user?.id) {
@@ -101,7 +129,7 @@ export default async function ExplorePage() {
                             </p>
                         </div>
                         <ResponsiveMasonryGrid>
-                            {images.map((image) => (
+                            {trendingImages.map((image) => (
                                 <ImagePostCard
                                     key={image.id}
                                     imageSrc={image.imageUrl}
