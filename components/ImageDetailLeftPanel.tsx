@@ -107,9 +107,6 @@ export function ImageDetailLeftPanel({
                             <span className="font-semibold text-lg text-foreground">
                                 {authorName}
                             </span>
-                            <span className="text-sm text-muted-foreground font-medium">
-                                Artist
-                            </span>
                             <span className="text-xs text-muted-foreground mt-0.5">
                                 1.2k followers
                             </span>
@@ -128,29 +125,37 @@ export function ImageDetailLeftPanel({
                     <h1 className="text-3xl font-bold text-foreground mb-3 leading-tight">
                         {title || "Untitled"}
                     </h1>
-                    <div className="flex items-center gap-2 mb-4">
-                        <Clock className="w-3 h-3 text-muted-foreground" />
-                        <span className="text-xs text-muted-foreground font-medium">
-                            Posted{" "}
-                            {createdAt
-                                ? new Date(createdAt).toLocaleDateString()
-                                : "recently"}
-                        </span>
+                    <div className="w-full mb-4">
+                        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                            <Clock className="w-3 h-3" />
+                            <span>
+                                Posted{" "}
+                                {createdAt
+                                    ? new Date(createdAt).toLocaleDateString()
+                                    : "recently"}
+                            </span>
+                            {currentLikesCount > 0 && (
+                                <>
+                                    <span className="text-muted-foreground">
+                                        •
+                                    </span>
+                                    <span className="text-foreground font-semibold">
+                                        {currentLikesCount}{" "}
+                                        {currentLikesCount === 1
+                                            ? "like"
+                                            : "likes"}
+                                    </span>
+                                </>
+                            )}
+                        </div>
                     </div>
+
                     {description && (
                         <p className="text-base text-foreground leading-relaxed mb-6">
                             {description}
                         </p>
                     )}
                     <div className="w-full border-t border-border mb-6" />
-                    {currentLikesCount > 0 && (
-                        <div className="mb-4">
-                            <span className="text-sm text-muted-foreground font-medium">
-                                {currentLikesCount}{" "}
-                                {currentLikesCount === 1 ? "like" : "likes"}
-                            </span>
-                        </div>
-                    )}
                     <div className="flex gap-3 mb-8 md:mb-0 overflow-x-auto">
                         <Button
                             className={`flex-1 shadow cursor-pointer ${
