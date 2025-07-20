@@ -1,27 +1,69 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Heart, Bookmark, Download, Share, Clock } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 interface ImageDetailLeftPanelProps {
+    imageId: string;
     imageSrc: string;
     authorImg?: string;
     authorName?: string;
     title?: string;
     description?: string;
     createdAt?: Date;
+    initialLiked?: boolean;
 }
 
 export function ImageDetailLeftPanel({
+    imageId,
     imageSrc,
     authorImg,
     authorName,
     title,
     description,
     createdAt,
+    initialLiked = false,
 }: ImageDetailLeftPanelProps) {
+    const [isLiked, setIsLiked] = useState(initialLiked);
+    const [isLiking, setIsLiking] = useState(false);
+
+    const handleLike = async () => {
+        if (isLiking) return;
+
+        setIsLiking(true);
+        const originalLiked = isLiked;
+
+        // optimistic update
+        setIsLiked(!isLiked);
+
+        try {
+            const response = await fetch("/api/like", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    imageId: imageId,
+                }),
+            });
+
+            if (!response.ok) {
+                throw new Error("Failed to like image");
+            }
+
+            const data = await response.json();
+            setIsLiked(data.liked);
+        } catch (error) {
+            console.error("Error liking image:", error);
+            // revert optimistic update
+            setIsLiked(originalLiked);
+        } finally {
+            setIsLiking(false);
+        }
+    };
     return (
         <div className="flex flex-col h-full bg-muted/30">
             <div className="w-full h-full bg-background rounded-none shadow-none overflow-hidden flex flex-col">
@@ -90,9 +132,21 @@ export function ImageDetailLeftPanel({
                     )}
                     <div className="w-full border-t border-border mb-6" />
                     <div className="flex gap-3 mb-8 md:mb-0 overflow-x-auto">
-                        <Button className="flex-1 bg-red-600 hover:bg-red-700 text-white shadow cursor-pointer">
-                            <Heart className="w-4 h-4 mr-2" />
-                            Like
+                        <Button
+                            className={`flex-1 shadow cursor-pointer ${
+                                isLiked
+                                    ? "bg-red-600 hover:bg-red-700 text-white"
+                                    : "bg-muted hover:bg-red-600 hover:text-white text-foreground"
+                            }`}
+                            onClick={handleLike}
+                            disabled={isLiking}
+                        >
+                            <Heart
+                                className={`w-4 h-4 mr-2 ${
+                                    isLiked ? "fill-current" : ""
+                                }`}
+                            />
+                            {isLiking ? "..." : isLiked ? "Liked" : "Like"}
                         </Button>
                         <Button
                             variant="outline"

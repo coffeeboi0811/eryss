@@ -54,10 +54,10 @@ export async function POST(request: NextRequest) {
                     imageId: image.id,
                 },
             });
+            return NextResponse.json({
+                liked: true,
+            });
         }
-        return NextResponse.json({
-            liked: true,
-        });
     } catch (error) {
         console.error("Failed to like image:", error);
         return NextResponse.json(

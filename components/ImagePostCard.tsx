@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Heart, Bookmark, Download } from "lucide-react";
@@ -13,6 +14,7 @@ interface ImagePostCardProps {
     authorName?: string;
     className?: string;
     index?: string;
+    initialLiked?: boolean;
 }
 
 export function ImagePostCard({
@@ -21,13 +23,52 @@ export function ImagePostCard({
     authorName,
     className,
     index,
+    initialLiked = false,
 }: ImagePostCardProps) {
     const router = useRouter();
+    const [isLiked, setIsLiked] = useState(initialLiked);
+    const [isLiking, setIsLiking] = useState(false);
 
     const handleImageClick = () => {
         if (index !== undefined) {
             window.scrollTo(0, 0); // force scroll to top before navigation
             router.push(`/image/${index}`);
+        }
+    };
+
+    const handleLike = async (e: React.MouseEvent) => {
+        e.stopPropagation(); // prevent triggering image click
+        if (isLiking || !index) return;
+
+        setIsLiking(true);
+        const originalLiked = isLiked;
+
+        // optimistic update
+        setIsLiked(!isLiked);
+
+        try {
+            const response = await fetch("/api/like", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    imageId: index,
+                }),
+            });
+
+            if (!response.ok) {
+                throw new Error("Failed to like image");
+            }
+
+            const data = await response.json();
+            setIsLiked(data.liked);
+        } catch (error) {
+            console.error("Error liking image:", error);
+            // revert optimistic update
+            setIsLiked(originalLiked);
+        } finally {
+            setIsLiking(false);
         }
     };
 
@@ -62,9 +103,19 @@ export function ImagePostCard({
                         <Button
                             size="sm"
                             variant="ghost"
-                            className="text-white hover:bg-red-500/30 hover:text-red-400 h-8 w-8 p-0 cursor-pointer transition-all duration-200"
+                            className={`h-8 w-8 p-0 cursor-pointer transition-all duration-200 ${
+                                isLiked
+                                    ? "text-red-400 hover:bg-red-500/30"
+                                    : "text-white hover:bg-red-500/30 hover:text-red-400"
+                            }`}
+                            onClick={handleLike}
+                            disabled={isLiking}
                         >
-                            <Heart className="w-4 h-4" />
+                            <Heart
+                                className={`w-4 h-4 ${
+                                    isLiked ? "fill-current" : ""
+                                }`}
+                            />
                         </Button>
                         <Button
                             size="sm"

@@ -1,6 +1,7 @@
 import { ImageDetailPageWrapper } from "@/components/ImageDetailPageWrapper";
 import { notFound } from "next/navigation";
 import prisma from "@/lib/prisma";
+import { getAuthSession } from "@/lib/authSession";
 import { shuffleArray } from "@/lib/shuffleArray";
 
 interface ImageDetailPageProps {
@@ -13,8 +14,9 @@ export default async function ImageDetailPage({
     params,
 }: ImageDetailPageProps) {
     const { id } = await params;
+    const session = await getAuthSession();
 
-    // the main image
+    // fetch the main image
     const image = await prisma.image.findUnique({
         where: {
             id: id,
@@ -32,6 +34,20 @@ export default async function ImageDetailPage({
 
     if (!image) {
         notFound();
+    }
+
+    // check if current user has liked this image
+    let isLiked = false;
+    if (session?.user?.id) {
+        const likeRecord = await prisma.like.findUnique({
+            where: {
+                userId_imageId: {
+                    userId: session.user.id,
+                    imageId: image.id,
+                },
+            },
+        });
+        isLiked = !!likeRecord;
     }
 
     // related images (excluding current image)
@@ -60,6 +76,7 @@ export default async function ImageDetailPage({
 
     return (
         <ImageDetailPageWrapper
+            imageId={image.id}
             imageData={{
                 imageSrc: image.imageUrl,
                 authorImg: image.user?.image || undefined,
@@ -74,6 +91,7 @@ export default async function ImageDetailPage({
                 authorImg: img.user?.image || undefined,
                 authorName: img.user?.name || undefined,
             }))}
+            initialLiked={isLiked}
         />
     );
 }

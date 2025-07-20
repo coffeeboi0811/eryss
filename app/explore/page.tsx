@@ -1,7 +1,6 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ResponsiveMasonryGrid } from "@/components/ResponsiveMasonryGrid";
 import { ImagePostCard } from "@/components/ImagePostCard";
-import { imagePosts } from "@/lib/imagePostsData";
 import prisma from "@/lib/prisma";
 
 export default async function ExplorePage() {
@@ -67,13 +66,13 @@ export default async function ExplorePage() {
                             </p>
                         </div>
                         <ResponsiveMasonryGrid>
-                            {imagePosts.map((post, index) => (
+                            {images.map((image) => (
                                 <ImagePostCard
-                                    key={`trending-${index}`}
-                                    imageSrc={post.imageSrc}
-                                    authorImg={post.authorImg}
-                                    authorName={post.authorName}
-                                    index={index}
+                                    key={image.id}
+                                    imageSrc={image.imageUrl}
+                                    authorImg={image.user.image || undefined}
+                                    authorName={image.user.name || undefined}
+                                    index={image.id}
                                 />
                             ))}
                         </ResponsiveMasonryGrid>

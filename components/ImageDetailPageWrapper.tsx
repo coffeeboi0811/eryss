@@ -8,6 +8,7 @@ import { ArrowLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 interface ImageDetailPageWrapperProps {
+    imageId: string;
     imageData: {
         imageSrc: string;
         authorImg?: string;
@@ -22,11 +23,14 @@ interface ImageDetailPageWrapperProps {
         authorImg?: string;
         authorName?: string;
     }>;
+    initialLiked?: boolean;
 }
 
 export function ImageDetailPageWrapper({
+    imageId,
     imageData,
     relatedImages,
+    initialLiked = false,
 }: ImageDetailPageWrapperProps) {
     const router = useRouter();
 
@@ -57,12 +61,14 @@ export function ImageDetailPageWrapper({
             <div className="w-full md:w-3/5 overflow-y-auto panel-scrollbar scroll-smooth">
                 <div className="pb-20 md:pb-12 px-4">
                     <ImageDetailLeftPanel
+                        imageId={imageId}
                         imageSrc={imageData.imageSrc}
                         authorImg={imageData.authorImg}
                         authorName={imageData.authorName}
                         title={imageData.title}
                         description={imageData.description}
                         createdAt={imageData.createdAt}
+                        initialLiked={initialLiked}
                     />
                 </div>
             </div>
