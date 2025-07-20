@@ -1,6 +1,7 @@
 import { ImageDetailPageWrapper } from "@/components/ImageDetailPageWrapper";
 import { notFound } from "next/navigation";
 import prisma from "@/lib/prisma";
+import { shuffleArray } from "@/lib/shuffleArray";
 
 interface ImageDetailPageProps {
     params: Promise<{
@@ -55,6 +56,8 @@ export default async function ImageDetailPage({
         },
     });
 
+    const shuffledRelatedImages = shuffleArray(relatedImages);
+
     return (
         <ImageDetailPageWrapper
             imageData={{
@@ -65,7 +68,7 @@ export default async function ImageDetailPage({
                 description: image.description || undefined,
                 createdAt: image.createdAt,
             }}
-            relatedImages={relatedImages.map((img) => ({
+            relatedImages={shuffledRelatedImages.map((img) => ({
                 id: img.id,
                 imageSrc: img.imageUrl,
                 authorImg: img.user?.image || undefined,

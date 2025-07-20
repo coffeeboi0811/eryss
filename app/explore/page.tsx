@@ -2,8 +2,23 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ResponsiveMasonryGrid } from "@/components/ResponsiveMasonryGrid";
 import { ImagePostCard } from "@/components/ImagePostCard";
 import { imagePosts } from "@/lib/imagePostsData";
+import prisma from "@/lib/prisma";
 
-export default function ExplorePage() {
+export default async function ExplorePage() {
+    const images = await prisma.image.findMany({
+        orderBy: {
+            createdAt: "desc",
+        },
+        include: {
+            user: {
+                select: {
+                    id: true,
+                    name: true,
+                    image: true,
+                },
+            },
+        },
+    });
     return (
         <div className="min-h-screen bg-background w-full">
             <div className="w-full px-4 py-8">
@@ -34,13 +49,13 @@ export default function ExplorePage() {
                             </p>
                         </div>
                         <ResponsiveMasonryGrid>
-                            {imagePosts.map((post, index) => (
+                            {images.map((image) => (
                                 <ImagePostCard
-                                    key={`now-${index}`}
-                                    imageSrc={post.imageSrc}
-                                    authorImg={post.authorImg}
-                                    authorName={post.authorName}
-                                    index={index}
+                                    key={image.id}
+                                    imageSrc={image.imageUrl}
+                                    authorImg={image.user.image || undefined}
+                                    authorName={image.user.name || undefined}
+                                    index={image.id}
                                 />
                             ))}
                         </ResponsiveMasonryGrid>
