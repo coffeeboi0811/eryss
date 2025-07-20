@@ -23,7 +23,8 @@ export default async function SavedImagesPage() {
                             imageSrc={post.imageSrc}
                             authorImg={post.authorImg}
                             authorName={post.authorName}
-                            index={index}
+                            index={index.toString()}
+                            initialLiked={false}
                         />
                     ))}
                 </ResponsiveMasonryGrid>

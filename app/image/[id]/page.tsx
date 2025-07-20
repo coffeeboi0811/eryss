@@ -74,6 +74,23 @@ export default async function ImageDetailPage({
 
     const shuffledRelatedImages = shuffleArray(relatedImages);
 
+    let relatedImageLikes: string[] = [];
+    if (session?.user?.id) {
+        const relatedImageIds = shuffledRelatedImages.map((img) => img.id);
+        const likes = await prisma.like.findMany({
+            where: {
+                userId: session.user.id,
+                imageId: {
+                    in: relatedImageIds,
+                },
+            },
+            select: {
+                imageId: true,
+            },
+        });
+        relatedImageLikes = likes.map((like) => like.imageId);
+    }
+
     return (
         <ImageDetailPageWrapper
             imageId={image.id}
@@ -90,6 +107,7 @@ export default async function ImageDetailPage({
                 imageSrc: img.imageUrl,
                 authorImg: img.user?.image || undefined,
                 authorName: img.user?.name || undefined,
+                initialLiked: relatedImageLikes.includes(img.id),
             }))}
             initialLiked={isLiked}
         />

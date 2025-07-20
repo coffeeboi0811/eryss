@@ -2,8 +2,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ResponsiveMasonryGrid } from "@/components/ResponsiveMasonryGrid";
 import { ImagePostCard } from "@/components/ImagePostCard";
 import prisma from "@/lib/prisma";
+import { getAuthSession } from "@/lib/authSession";
 
 export default async function ExplorePage() {
+    const session = await getAuthSession();
+
     const images = await prisma.image.findMany({
         orderBy: {
             createdAt: "desc",
@@ -18,6 +21,19 @@ export default async function ExplorePage() {
             },
         },
     });
+
+    let userLikes: string[] = [];
+    if (session?.user?.id) {
+        const likes = await prisma.like.findMany({
+            where: {
+                userId: session.user.id,
+            },
+            select: {
+                imageId: true,
+            },
+        });
+        userLikes = likes.map((like) => like.imageId);
+    }
     return (
         <div className="min-h-screen bg-background w-full">
             <div className="w-full px-4 py-8">
@@ -55,6 +71,7 @@ export default async function ExplorePage() {
                                     authorImg={image.user.image || undefined}
                                     authorName={image.user.name || undefined}
                                     index={image.id}
+                                    initialLiked={userLikes.includes(image.id)}
                                 />
                             ))}
                         </ResponsiveMasonryGrid>
@@ -73,6 +90,7 @@ export default async function ExplorePage() {
                                     authorImg={image.user.image || undefined}
                                     authorName={image.user.name || undefined}
                                     index={image.id}
+                                    initialLiked={userLikes.includes(image.id)}
                                 />
                             ))}
                         </ResponsiveMasonryGrid>

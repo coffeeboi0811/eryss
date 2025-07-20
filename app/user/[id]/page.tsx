@@ -3,6 +3,7 @@ import { ResponsiveMasonryGrid } from "@/components/ResponsiveMasonryGrid";
 import { ImagePostCard } from "@/components/ImagePostCard";
 import prisma from "@/lib/prisma";
 import { notFound } from "next/navigation";
+import { getAuthSession } from "@/lib/authSession";
 
 interface UserProfilePageProps {
     params: Promise<{
@@ -14,6 +15,8 @@ export default async function UserProfilePage({
     params,
 }: UserProfilePageProps) {
     const { id } = await params;
+    const session = await getAuthSession();
+
     const user = await prisma.user.findUnique({
         where: {
             id: id,
@@ -45,6 +48,19 @@ export default async function UserProfilePage({
             },
         },
     });
+
+    let userLikes: string[] = [];
+    if (session?.user?.id) {
+        const likes = await prisma.like.findMany({
+            where: {
+                userId: session.user.id,
+            },
+            select: {
+                imageId: true,
+            },
+        });
+        userLikes = likes.map((like) => like.imageId);
+    }
     return (
         <div>
             <ProfilePageDetails user={user} />
@@ -57,6 +73,7 @@ export default async function UserProfilePage({
                             authorImg={image.user.image || undefined}
                             authorName={image.user.name || undefined}
                             index={image.id}
+                            initialLiked={userLikes.includes(image.id)}
                         />
                     ))}
                 </ResponsiveMasonryGrid>

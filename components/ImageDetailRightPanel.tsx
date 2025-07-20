@@ -10,6 +10,7 @@ interface ImageDetailRightPanelProps {
         imageSrc: string;
         authorImg?: string;
         authorName?: string;
+        initialLiked?: boolean;
     }>;
 }
 
@@ -31,13 +32,14 @@ export function ImageDetailRightPanel({
                     className="masonry-grid"
                     columnClassName="masonry-grid_column"
                 >
-                    {relatedImages.map((post) => (
+                    {relatedImages.map((image) => (
                         <ImagePostCard
-                            key={post.id}
-                            imageSrc={post.imageSrc}
-                            authorImg={post.authorImg}
-                            authorName={post.authorName}
-                            index={post.id}
+                            key={image.id}
+                            imageSrc={image.imageSrc}
+                            authorImg={image.authorImg}
+                            authorName={image.authorName}
+                            index={image.id}
+                            initialLiked={image.initialLiked}
                         />
                     ))}
                 </Masonry>

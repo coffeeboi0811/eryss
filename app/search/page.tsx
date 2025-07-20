@@ -4,6 +4,7 @@ import { ImagePostCard } from "@/components/ImagePostCard";
 import { UserSearchResult } from "@/components/UserSearchResult";
 import prisma from "@/lib/prisma";
 import { redirect } from "next/navigation";
+import { getAuthSession } from "@/lib/authSession";
 
 interface SearchPageProps {
     searchParams: Promise<{
@@ -14,6 +15,7 @@ interface SearchPageProps {
 export default async function SearchPage({ searchParams }: SearchPageProps) {
     const { q } = await searchParams;
     const query = q?.trim() || "";
+    const session = await getAuthSession();
 
     if (query === "") {
         redirect("/"); // redirect to home if no query
@@ -65,6 +67,19 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
         },
     });
 
+    let userLikes: string[] = [];
+    if (session?.user?.id) {
+        const likes = await prisma.like.findMany({
+            where: {
+                userId: session.user.id,
+            },
+            select: {
+                imageId: true,
+            },
+        });
+        userLikes = likes.map((like) => like.imageId);
+    }
+
     return (
         <div className="min-h-screen bg-background w-full">
             <div className="w-full px-4 py-8">
@@ -102,6 +117,9 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
                                             image.user.name || undefined
                                         }
                                         index={image.id}
+                                        initialLiked={userLikes.includes(
+                                            image.id
+                                        )}
                                     />
                                 ))}
                             </ResponsiveMasonryGrid>

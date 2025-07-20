@@ -22,6 +22,7 @@ interface ImageDetailPageWrapperProps {
         imageSrc: string;
         authorImg?: string;
         authorName?: string;
+        initialLiked?: boolean;
     }>;
     initialLiked?: boolean;
 }
