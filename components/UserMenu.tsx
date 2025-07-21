@@ -7,6 +7,17 @@ import {
     DropdownMenuTrigger,
     DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
     LogOut,
@@ -128,13 +139,43 @@ export function UserMenu({ session }: UserMenuProps) {
                     <Star className="w-4 h-4 text-yellow-500" />
                     Star on GitHub
                 </DropdownMenuItem>
-                <DropdownMenuItem
-                    className="flex items-center gap-2 text-red-600 cursor-pointer not-dark:hover:bg-red-100 dark:hover:bg-red-950/20 dark:hover:text-red-600 not-dark:hover:text-red-600 dark:hover:font-bold not-dark:hover:font-bold"
-                    onClick={() => signOut()}
-                >
-                    <LogOut className="w-4 h-4 text-red-600" />
-                    Log out
-                </DropdownMenuItem>
+                <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                        <DropdownMenuItem
+                            className="flex items-center gap-2 text-red-600 cursor-pointer hover:bg-red-100 dark:hover:bg-red-950/20 not-dark:hover:text-red-600 dark:hover:text-red-600 dark:hover:font-bold not-dark:hover:font-bold"
+                            onSelect={(e) => e.preventDefault()}
+                        >
+                            <LogOut className="w-4 h-4 text-red-600" />
+                            Log out
+                        </DropdownMenuItem>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                        <AlertDialogHeader>
+                            <AlertDialogTitle>
+                                Are you sure you want to log out?
+                            </AlertDialogTitle>
+                            <AlertDialogDescription>
+                                You will be signed out of your account and
+                                redirected to the home page.
+                            </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                            <AlertDialogCancel className="cursor-pointer">
+                                Cancel
+                            </AlertDialogCancel>
+                            <AlertDialogAction
+                                className="bg-red-600 hover:bg-red-700 text-white cursor-pointer"
+                                onClick={() =>
+                                    signOut({
+                                        callbackUrl: "/",
+                                    })
+                                }
+                            >
+                                Log out
+                            </AlertDialogAction>
+                        </AlertDialogFooter>
+                    </AlertDialogContent>
+                </AlertDialog>
             </DropdownMenuContent>
         </DropdownMenu>
     );

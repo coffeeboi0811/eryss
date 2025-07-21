@@ -19,7 +19,9 @@ export function Navbar() {
     const { data: session, status } = useSession();
 
     const handleLogin = () => {
-        signIn("google");
+        signIn("google", {
+            callbackUrl: `${window.location.href}/`,
+        });
     };
 
     const clearSearch = () => {
