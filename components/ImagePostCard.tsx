@@ -14,6 +14,7 @@ import {
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface ImagePostCardProps {
     imageSrc: string;
@@ -25,6 +26,33 @@ interface ImagePostCardProps {
     initialLiked?: boolean;
     initialSaved?: boolean;
     likesCount?: number;
+}
+
+// skeleton version of the image post card
+export function ImagePostCardSkeleton({ className }: { className?: string }) {
+    return (
+        <div
+            className={cn(
+                "relative overflow-hidden rounded-2xl shadow-sm w-full block break-inside-avoid mb-4 bg-muted",
+                className
+            )}
+        >
+            <Skeleton className="w-full aspect-[3/4] object-cover rounded-2xl" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent flex flex-col justify-end z-10">
+                <div className="p-3 flex items-end justify-between">
+                    <div className="flex items-center gap-2">
+                        <Skeleton className="w-8 h-8 rounded-full border-2 border-white" />
+                        <Skeleton className="h-5 w-12 rounded-full bg-white/20" />
+                    </div>
+                    <div className="flex gap-1">
+                        <Skeleton className="h-8 w-8 rounded-full bg-white/20" />
+                        <Skeleton className="h-8 w-8 rounded-full bg-white/20" />
+                        <Skeleton className="h-8 w-8 rounded-full bg-white/20" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
 }
 
 export function ImagePostCard({

@@ -2,6 +2,7 @@
 
 import { Search, Home, Compass, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import Link from "next/link";
 import { UserMenu } from "./UserMenu";
 import { useRouter, usePathname } from "next/navigation";
@@ -13,7 +14,7 @@ export function Navbar() {
     const router = useRouter();
     const pathname = usePathname();
 
-    const { data: session } = useSession();
+    const { data: session, status } = useSession();
 
     const handleLogin = () => {
         signIn("google");
@@ -93,7 +94,9 @@ export function Navbar() {
                     </div>
                     {/* right section */}
                     <div className="flex items-center h-full px-4">
-                        {session ? (
+                        {status === "loading" ? (
+                            <Skeleton className="h-10 w-10 rounded-full" />
+                        ) : session ? (
                             <UserMenu session={session} />
                         ) : (
                             <Button
@@ -154,7 +157,9 @@ export function Navbar() {
                         </form>
                     </div>
                     <div className="flex items-center h-full">
-                        {session ? (
+                        {status === "loading" ? (
+                            <Skeleton className="h-8 w-8 rounded-full" />
+                        ) : session ? (
                             <UserMenu session={session} />
                         ) : (
                             <Button

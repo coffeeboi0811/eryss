@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/dialog";
 import { Calendar } from "lucide-react";
 import { useSession } from "next-auth/react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface User {
     id: string;
@@ -34,7 +35,7 @@ export default function ProfilePageDetails({
     initialFollowStatus = false,
     initialFollowerCount = 0,
 }: ProfilePageDetailsProps) {
-    const { data: session } = useSession();
+    const { data: session, status } = useSession();
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [editedName, setEditedName] = useState(user.name || "");
     const [editedBio, setEditedBio] = useState(user.bio || "");
@@ -206,7 +207,9 @@ export default function ProfilePageDetails({
                     >
                         Share
                     </Button>
-                    {session?.user.id === user.id ? (
+                    {status === "loading" ? (
+                        <Skeleton className="h-10 w-24 rounded-md" />
+                    ) : session?.user.id === user.id ? (
                         <Dialog
                             open={isDialogOpen}
                             onOpenChange={setIsDialogOpen}

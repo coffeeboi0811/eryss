@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface ImageDetailLeftPanelProps {
     imageId: string;
@@ -50,7 +51,7 @@ export function ImageDetailLeftPanel({
     likesCount = 0,
 }: ImageDetailLeftPanelProps) {
     const router = useRouter();
-    const { data: session } = useSession();
+    const { data: session, status } = useSession();
     const [isLiked, setIsLiked] = useState(initialLiked);
     const [isSaved, setIsSaved] = useState(initialSaved);
     const [isLiking, setIsLiking] = useState(false);
@@ -230,7 +231,9 @@ export function ImageDetailLeftPanel({
                             </span>
                         </div>
                         <div className="flex-1" />
-                        {isAuthor ? (
+                        {status === "loading" ? (
+                            <Skeleton className="h-8 w-20 rounded-full" />
+                        ) : isAuthor ? (
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
                                     <Button
