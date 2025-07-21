@@ -68,6 +68,7 @@ export default async function LikedImagesPage() {
                             imageSrc={image.image.imageUrl}
                             authorImg={image.image.user.image || undefined}
                             authorName={image.image.user.name || undefined}
+                            authorId={image.image.user.id}
                             index={image.image.id}
                             initialLiked={true}
                             initialSaved={savedImageIds.includes(

@@ -3,14 +3,31 @@
 import { useState } from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { Heart, Bookmark, Download, Share, Clock } from "lucide-react";
+import {
+    Heart,
+    Bookmark,
+    Download,
+    Share,
+    Clock,
+    MoreVertical,
+    Trash2,
+} from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 interface ImageDetailLeftPanelProps {
     imageId: string;
     imageSrc: string;
     authorImg?: string;
     authorName?: string;
+    authorId?: string;
     title?: string;
     description?: string;
     createdAt?: Date;
@@ -24,6 +41,7 @@ export function ImageDetailLeftPanel({
     imageSrc,
     authorImg,
     authorName,
+    authorId,
     title,
     description,
     createdAt,
@@ -31,10 +49,13 @@ export function ImageDetailLeftPanel({
     initialSaved = false,
     likesCount = 0,
 }: ImageDetailLeftPanelProps) {
+    const router = useRouter();
+    const { data: session } = useSession();
     const [isLiked, setIsLiked] = useState(initialLiked);
     const [isSaved, setIsSaved] = useState(initialSaved);
     const [isLiking, setIsLiking] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
+    const [isDeleting, setIsDeleting] = useState(false);
     const [currentLikesCount, setCurrentLikesCount] = useState(likesCount);
 
     const handleLike = async () => {
@@ -115,6 +136,36 @@ export function ImageDetailLeftPanel({
             setIsSaving(false);
         }
     };
+
+    const handleDelete = async () => {
+        if (isDeleting) return;
+        const confirmed = confirm(
+            "Are you sure you want to delete this image? This action cannot be undone."
+        );
+        if (!confirmed) return;
+        setIsDeleting(true);
+        try {
+            const response = await fetch(`/api/images/${imageId}`, {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error("Failed to delete image");
+            }
+
+            router.push("/");
+        } catch (error) {
+            console.error("Error deleting image:", error);
+            alert("Failed to delete image. Please try again.");
+        } finally {
+            setIsDeleting(false);
+        }
+    };
+
+    const isAuthor = session?.user?.id === authorId;
     return (
         <div className="flex flex-col h-full bg-muted/30">
             <div className="w-full h-full bg-background rounded-none shadow-none overflow-hidden flex flex-col">
@@ -151,6 +202,32 @@ export function ImageDetailLeftPanel({
                             </span>
                         </div>
                         <div className="flex-1" />
+                        {isAuthor && (
+                            <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                    <Button
+                                        size="sm"
+                                        variant="ghost"
+                                        className="h-10 w-10 p-0 cursor-pointer rounded-full hover:bg-muted"
+                                    >
+                                        <MoreVertical className="w-4 h-4" />
+                                    </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent
+                                    align="end"
+                                    className="w-40"
+                                >
+                                    <DropdownMenuItem
+                                        className="text-red-600 focus:text-red-700 cursor-pointer"
+                                        onClick={handleDelete}
+                                        disabled={isDeleting}
+                                    >
+                                        <Trash2 className="w-4 h-4 mr-2" />
+                                        {isDeleting ? "Deleting..." : "Delete"}
+                                    </DropdownMenuItem>
+                                </DropdownMenuContent>
+                            </DropdownMenu>
+                        )}
                         <Button
                             size="sm"
                             className="rounded-full px-6 py-2 font-semibold bg-primary text-primary-foreground hover:bg-primary/90 shadow cursor-pointer"

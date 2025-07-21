@@ -10,6 +10,7 @@ interface ImageDetailRightPanelProps {
         imageSrc: string;
         authorImg?: string;
         authorName?: string;
+        authorId?: string;
         initialLiked?: boolean;
         initialSaved?: boolean;
         likesCount?: number;
@@ -40,6 +41,7 @@ export function ImageDetailRightPanel({
                             imageSrc={image.imageSrc}
                             authorImg={image.authorImg}
                             authorName={image.authorName}
+                            authorId={image.authorId}
                             index={image.id}
                             initialLiked={image.initialLiked}
                             initialSaved={image.initialSaved}

@@ -132,6 +132,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
                                         authorName={
                                             image.user.name || undefined
                                         }
+                                        authorId={image.user.id}
                                         index={image.id}
                                         initialLiked={userLikes.includes(
                                             image.id

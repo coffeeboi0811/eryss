@@ -58,6 +58,7 @@ export default async function Home() {
                         imageSrc={image.imageUrl}
                         authorImg={image.user.image || undefined}
                         authorName={image.user.name || undefined}
+                        authorId={image.user.id}
                         index={image.id}
                         initialLiked={userLikes.includes(image.id)}
                         initialSaved={userSaves.includes(image.id)}

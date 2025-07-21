@@ -3,15 +3,23 @@
 import { useState } from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { Heart, Bookmark, Download } from "lucide-react";
+import { Heart, Bookmark, Download, MoreVertical, Trash2 } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 interface ImagePostCardProps {
     imageSrc: string;
     authorImg?: string;
     authorName?: string;
+    authorId?: string;
     className?: string;
     index?: string;
     initialLiked?: boolean;
@@ -23,6 +31,7 @@ export function ImagePostCard({
     imageSrc,
     authorImg,
     authorName,
+    authorId,
     className,
     index,
     initialLiked = false,
@@ -30,11 +39,13 @@ export function ImagePostCard({
     likesCount = 0,
 }: ImagePostCardProps) {
     const router = useRouter();
+    const { data: session } = useSession();
     const [isLiked, setIsLiked] = useState(initialLiked);
     const [isSaved, setIsSaved] = useState(initialSaved);
     const [isLiking, setIsLiking] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
     const [currentLikesCount, setCurrentLikesCount] = useState(likesCount);
+    const [isDeleting, setIsDeleting] = useState(false);
 
     const handleImageClick = () => {
         if (index !== undefined) {
@@ -124,6 +135,37 @@ export function ImagePostCard({
         }
     };
 
+    const handleDelete = async (e: React.MouseEvent) => {
+        e.stopPropagation(); // prevent triggering image click
+        if (isDeleting || !index) return;
+        const confirmed = confirm(
+            "Are you sure you want to delete this image? This action cannot be undone."
+        );
+        if (!confirmed) return;
+        setIsDeleting(true);
+        try {
+            const response = await fetch(`/api/images/${index}`, {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error("Failed to delete image");
+            }
+
+            window.location.reload();
+        } catch (error) {
+            console.error("Error deleting image:", error);
+            alert("Failed to delete image. Please try again.");
+        } finally {
+            setIsDeleting(false);
+        }
+    };
+
+    const isAuthor = session?.user?.id === authorId;
+
     return (
         <div
             className={cn(
@@ -140,6 +182,32 @@ export function ImagePostCard({
                 className="w-full h-auto object-cover transition-transform duration-300 group-hover:scale-105"
                 priority
             />
+            {isAuthor && (
+                <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button
+                                size="sm"
+                                variant="ghost"
+                                className="h-8 w-8 p-0 cursor-pointer bg-black/50 hover:bg-black/70 text-white rounded-full"
+                                onClick={(e) => e.stopPropagation()}
+                            >
+                                <MoreVertical className="w-4 h-4" />
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="w-40">
+                            <DropdownMenuItem
+                                className="text-red-600 focus:text-red-700 cursor-pointer"
+                                onClick={handleDelete}
+                                disabled={isDeleting}
+                            >
+                                <Trash2 className="w-4 h-4 mr-2" />
+                                {isDeleting ? "Deleting..." : "Delete"}
+                            </DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                </div>
+            )}
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end">
                 <div className="p-3 flex items-end justify-between">
                     <div className="flex items-center gap-2">

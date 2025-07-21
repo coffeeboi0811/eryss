@@ -13,6 +13,7 @@ interface ImageDetailPageWrapperProps {
         imageSrc: string;
         authorImg?: string;
         authorName?: string;
+        authorId?: string;
         title?: string;
         description?: string;
         createdAt?: Date;
@@ -23,6 +24,7 @@ interface ImageDetailPageWrapperProps {
         imageSrc: string;
         authorImg?: string;
         authorName?: string;
+        authorId?: string;
         initialLiked?: boolean;
         initialSaved?: boolean;
         likesCount?: number;
@@ -71,6 +73,7 @@ export function ImageDetailPageWrapper({
                         imageSrc={imageData.imageSrc}
                         authorImg={imageData.authorImg}
                         authorName={imageData.authorName}
+                        authorId={imageData.authorId}
                         title={imageData.title}
                         description={imageData.description}
                         createdAt={imageData.createdAt}
