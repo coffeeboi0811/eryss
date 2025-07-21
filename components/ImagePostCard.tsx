@@ -46,6 +46,7 @@ export function ImagePostCard({
     const [isSaving, setIsSaving] = useState(false);
     const [currentLikesCount, setCurrentLikesCount] = useState(likesCount);
     const [isDeleting, setIsDeleting] = useState(false);
+    const [isDownloading, setIsDownloading] = useState(false);
 
     const handleImageClick = () => {
         if (index !== undefined) {
@@ -164,6 +165,30 @@ export function ImagePostCard({
         }
     };
 
+    const handleDownload = async (e: React.MouseEvent) => {
+        e.stopPropagation();
+        if (isDownloading) return;
+
+        setIsDownloading(true);
+        try {
+            const response = await fetch(imageSrc);
+            const blob = await response.blob();
+            const url = URL.createObjectURL(blob);
+
+            const link = document.createElement("a");
+            link.href = url;
+            link.download = `${authorName || "image"}_${Date.now()}.jpg`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        } catch (error) {
+            console.error("Download failed:", error);
+        } finally {
+            setIsDownloading(false);
+        }
+    };
+
     const isAuthor = session?.user?.id === authorId;
 
     return (
@@ -266,6 +291,8 @@ export function ImagePostCard({
                             size="sm"
                             variant="ghost"
                             className="text-white hover:bg-green-500/30 hover:text-green-400 h-8 w-8 p-0 cursor-pointer transition-all duration-200"
+                            onClick={handleDownload}
+                            disabled={isDownloading}
                         >
                             <Download className="w-4 h-4" />
                         </Button>

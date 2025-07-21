@@ -57,6 +57,7 @@ export function ImageDetailLeftPanel({
     const [isSaving, setIsSaving] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
     const [currentLikesCount, setCurrentLikesCount] = useState(likesCount);
+    const [isDownloading, setIsDownloading] = useState(false);
 
     const handleLike = async () => {
         if (isLiking) return;
@@ -162,6 +163,31 @@ export function ImageDetailLeftPanel({
             alert("Failed to delete image. Please try again.");
         } finally {
             setIsDeleting(false);
+        }
+    };
+
+    const handleDownload = async () => {
+        if (isDownloading) return;
+
+        setIsDownloading(true);
+        try {
+            const response = await fetch(imageSrc);
+            const blob = await response.blob();
+            const url = URL.createObjectURL(blob);
+
+            const link = document.createElement("a");
+            link.href = url;
+            link.download = `${
+                title || authorName || "image"
+            }_${Date.now()}.jpg`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        } catch (error) {
+            console.error("Download failed:", error);
+        } finally {
+            setIsDownloading(false);
         }
     };
 
@@ -318,9 +344,11 @@ export function ImageDetailLeftPanel({
                         <Button
                             variant="outline"
                             className="flex-1 shadow-sm cursor-pointer"
+                            onClick={handleDownload}
+                            disabled={isDownloading}
                         >
                             <Download className="w-4 h-4 mr-2" />
-                            Download
+                            {isDownloading ? "Downloading..." : "Download"}
                         </Button>
                     </div>
                 </div>
