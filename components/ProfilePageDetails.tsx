@@ -34,6 +34,7 @@ export default function ProfilePageDetails({ user }: ProfilePageDetailsProps) {
     const [editedBio, setEditedBio] = useState(user.bio || "");
     const [nameError, setNameError] = useState("");
     const [bioError, setBioError] = useState("");
+    const [isUpdating, setIsUpdating] = useState(false);
 
     const userInitials = user.name
         ? user.name
@@ -73,13 +74,48 @@ export default function ProfilePageDetails({ user }: ProfilePageDetailsProps) {
         return isValid;
     };
 
-    const handleUpdate = () => {
-        if (validateForm()) {
-            console.log("Updated profile data:", {
-                name: editedName.trim(),
-                bio: editedBio,
+    const handleUpdate = async () => {
+        if (!validateForm()) {
+            return;
+        }
+        setIsUpdating(true);
+        try {
+            const response = await fetch("/api/profile", {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    name: editedName.trim(),
+                    bio: editedBio,
+                }),
             });
+            const data = await response.json();
+            if (!response.ok) {
+                // handle structured validation errors from zod
+                if (data.details && Array.isArray(data.details)) {
+                    data.details.forEach(
+                        (detail: { field: string; message: string }) => {
+                            if (detail.field === "name") {
+                                setNameError(detail.message);
+                            } else if (detail.field === "bio") {
+                                setBioError(detail.message);
+                            }
+                        }
+                    );
+                    return;
+                } else if (data.error) {
+                    // handle generic errors
+                    console.error("Profile update error:", data.error);
+                    return;
+                }
+            }
             setIsDialogOpen(false);
+            window.location.reload();
+        } catch (error) {
+            console.error("Network error:", error);
+        } finally {
+            setIsUpdating(false);
         }
     };
 
@@ -214,14 +250,16 @@ export default function ProfilePageDetails({ user }: ProfilePageDetailsProps) {
                                         variant="outline"
                                         onClick={() => setIsDialogOpen(false)}
                                         className="cursor-pointer"
+                                        disabled={isUpdating}
                                     >
                                         Cancel
                                     </Button>
                                     <Button
                                         onClick={handleUpdate}
                                         className="bg-primary hover:bg-primary/90 text-primary-foreground cursor-pointer"
+                                        disabled={isUpdating}
                                     >
-                                        Update
+                                        {isUpdating ? "Updating..." : "Update"}
                                     </Button>
                                 </div>
                             </DialogContent>
