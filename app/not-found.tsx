@@ -3,7 +3,6 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { Toaster } from "@/components/ui/sonner";
 
 export default function NotFound() {
     const router = useRouter();
@@ -22,12 +21,6 @@ export default function NotFound() {
             <div className="fixed inset-0 flex items-center justify-center bg-background">
                 <p className="text-muted-foreground">Redirecting...</p>
             </div>
-            <Toaster
-                position="bottom-center"
-                richColors
-                duration={1500}
-                className="z-50"
-            />
         </>
     );
 }

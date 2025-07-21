@@ -14,10 +14,8 @@ export async function PUT(request: NextRequest) {
                 { status: 401 }
             );
         }
-
         const body = await request.json();
         const validationResult = updateProfileSchema.safeParse(body);
-
         if (!validationResult.success) {
             return NextResponse.json(
                 {
@@ -30,13 +28,11 @@ export async function PUT(request: NextRequest) {
                 { status: 400 }
             );
         }
-
         const { name, bio } = validationResult.data;
-
-        const updatedUser = await prisma.user.update({
+        await prisma.user.update({
             where: { id: session.user.id },
             data: {
-                name: name, // name is already trimmed by Zod
+                name: name,
                 bio: bio || null,
             },
             select: {
@@ -48,7 +44,7 @@ export async function PUT(request: NextRequest) {
         });
         return NextResponse.json({
             success: true,
-            user: updatedUser,
+            message: "Profile updated successfully",
         });
     } catch (error) {
         console.error("Failed to update profile:", error);

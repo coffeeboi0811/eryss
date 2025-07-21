@@ -13,9 +13,11 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog";
-import { Calendar } from "lucide-react";
+import { Calendar, Share, UserPlus, UserMinus, Settings } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 interface User {
     id: string;
@@ -28,12 +30,16 @@ interface ProfilePageDetailsProps {
     user: User;
     initialFollowStatus?: boolean;
     initialFollowerCount?: number;
+    imageCount: number;
+    likeCount: number;
 }
 
 export default function ProfilePageDetails({
     user,
     initialFollowStatus = false,
     initialFollowerCount = 0,
+    imageCount,
+    likeCount,
 }: ProfilePageDetailsProps) {
     const { data: session, status } = useSession();
     const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -45,6 +51,8 @@ export default function ProfilePageDetails({
     const [isFollowing, setIsFollowing] = useState(initialFollowStatus);
     const [followerCount, setFollowerCount] = useState(initialFollowerCount);
     const [isFollowLoading, setIsFollowLoading] = useState(false);
+
+    const router = useRouter();
 
     const userInitials = user.name
         ? user.name
@@ -85,7 +93,7 @@ export default function ProfilePageDetails({
     };
 
     const handleUpdate = async () => {
-        if (!validateForm()) {
+        if (!validateForm() || isUpdating) {
             return;
         }
         setIsUpdating(true);
@@ -121,7 +129,8 @@ export default function ProfilePageDetails({
                 }
             }
             setIsDialogOpen(false);
-            window.location.reload();
+            router.refresh();
+            toast.success("Profile updated successfully!");
         } catch (error) {
             console.error("Network error:", error);
         } finally {
@@ -149,14 +158,11 @@ export default function ProfilePageDetails({
             const data = await response.json();
             setIsFollowing(data.followed);
 
-            if (data.followerCount !== undefined) {
-                setFollowerCount(data.followerCount);
-            } else {
-                // fallback: manually update count
-                setFollowerCount((prev) =>
-                    data.followed ? prev + 1 : prev - 1
-                );
-            }
+            // optimistically update follower count
+            setFollowerCount((prev) => (data.followed ? prev + 1 : prev - 1));
+            toast.success(
+                data.followed ? `You are now following @${userHandle}` : `Unfollowed @${userHandle}`
+            );
         } catch (error) {
             console.error("Failed to follow user:", error);
         } finally {
@@ -196,8 +202,9 @@ export default function ProfilePageDetails({
                     </div>
                     <p className="text-muted-foreground text-sm font-semibold">
                         {followerCount}{" "}
-                        {followerCount === 1 ? "follower" : "followers"} • 342
-                        likes • 21 images
+                        {followerCount === 1 ? "follower" : "followers"} •{" "}
+                        {likeCount} {likeCount === 1 ? "like" : "likes"} •{" "}
+                        {imageCount} {imageCount === 1 ? "image" : "images"}
                     </p>
                 </div>
                 <div className="flex gap-3">
@@ -205,6 +212,7 @@ export default function ProfilePageDetails({
                         variant="outline"
                         className="shadow-sm cursor-pointer"
                     >
+                        <Share className="w-4 h-4 mr-2" />
                         Share
                     </Button>
                     {status === "loading" ? (
@@ -216,6 +224,7 @@ export default function ProfilePageDetails({
                         >
                             <DialogTrigger asChild>
                                 <Button className="bg-primary hover:bg-primary/90 text-primary-foreground cursor-pointer">
+                                    <Settings className="w-4 h-4 mr-2" />
                                     Edit profile
                                 </Button>
                             </DialogTrigger>
@@ -324,11 +333,19 @@ export default function ProfilePageDetails({
                                     : "bg-primary hover:bg-primary/90 text-primary-foreground"
                             }`}
                         >
-                            {isFollowLoading
-                                ? "Loading..."
-                                : isFollowing
-                                ? "Unfollow"
-                                : "Follow"}
+                            {isFollowLoading ? (
+                                "Loading..."
+                            ) : isFollowing ? (
+                                <>
+                                    <UserMinus className="w-4 h-4 mr-2" />
+                                    Unfollow
+                                </>
+                            ) : (
+                                <>
+                                    <UserPlus className="w-4 h-4 mr-2" />
+                                    Follow
+                                </>
+                            )}
                         </Button>
                     )}
                 </div>

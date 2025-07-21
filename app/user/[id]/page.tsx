@@ -106,6 +106,8 @@ export default async function UserProfilePage({
                 user={user}
                 initialFollowerCount={user._count.followers}
                 initialFollowStatus={isCurrentUserFollowing}
+                likeCount={user._count.likes}
+                imageCount={user._count.images}
             />
             <main className="w-full px-4 py-8">
                 <ResponsiveMasonryGrid>
