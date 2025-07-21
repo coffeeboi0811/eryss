@@ -7,6 +7,7 @@ import { UserMenu } from "./UserMenu";
 import { useRouter, usePathname } from "next/navigation";
 import { useSession, signIn } from "next-auth/react";
 import { GoogleIcon } from "./icons/GoogleIcon";
+import Image from "next/image";
 
 export function Navbar() {
     const router = useRouter();
@@ -26,10 +27,14 @@ export function Navbar() {
                     {/* left section */}
                     <div className="flex items-center space-x-4 h-full">
                         <Link href="/" className="flex items-center h-full">
-                            <div className="w-8 h-8 bg-red-600 rounded-full flex items-center justify-center flex-shrink-0">
-                                <span className="text-white font-bold text-lg">
-                                    E
-                                </span>
+                            <div className="flex items-center justify-center flex-shrink-0">
+                                <Image
+                                    src="/logo.svg"
+                                    alt="Eryss Logo"
+                                    width={64}
+                                    height={64}
+                                    className="w-16 h-16 dark:invert"
+                                />
                             </div>
                         </Link>
                         <div className="flex items-center space-x-2 h-full">
@@ -114,10 +119,14 @@ export function Navbar() {
             <nav className="md:hidden fixed top-0 left-0 right-0 z-50 bg-background border-b border-border h-16">
                 <div className="flex items-center justify-between px-4 py-0 h-full">
                     <Link href="/" className="flex items-center h-full">
-                        <div className="w-8 h-8 bg-red-600 rounded-full flex items-center justify-center flex-shrink-0">
-                            <span className="text-white font-bold text-lg">
-                                E
-                            </span>
+                        <div className="flex items-center justify-center flex-shrink-0">
+                            <Image
+                                src="/logo.svg"
+                                alt="Eryss Logo"
+                                width={32}
+                                height={32}
+                                className="w-8 h-8 dark:invert"
+                            />
                         </div>
                     </Link>
 
