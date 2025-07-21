@@ -21,6 +21,12 @@ export async function POST(
                 { status: 400 }
             );
         }
+        if (session.user.id === id) {
+            return NextResponse.json(
+                { error: "You cannot follow yourself." },
+                { status: 400 }
+            );
+        }
         const userToFollow = await prisma.user.findUnique({
             where: { id },
             select: {

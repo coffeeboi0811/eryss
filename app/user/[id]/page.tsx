@@ -25,6 +25,15 @@ export default async function UserProfilePage({
             email: true,
             emailVerified: true,
         },
+        include: {
+            _count: {
+                select: {
+                    images: true,
+                    followers: true,
+                    likes: true,
+                },
+            },
+        },
     });
 
     if (!user) {
@@ -77,9 +86,27 @@ export default async function UserProfilePage({
         });
         userSaves = saves.map((save) => save.imageId);
     }
+
+    let isCurrentUserFollowing = false;
+    if (session?.user?.id && session.user.id !== user.id) {
+        const followRelation = await prisma.follow.findUnique({
+            where: {
+                followerId_followingId: {
+                    followerId: session.user.id,
+                    followingId: user.id,
+                },
+            },
+        });
+        isCurrentUserFollowing = !!followRelation;
+    }
+
     return (
         <div>
-            <ProfilePageDetails user={user} />
+            <ProfilePageDetails
+                user={user}
+                initialFollowerCount={user._count.followers}
+                initialFollowStatus={isCurrentUserFollowing}
+            />
             <main className="w-full px-4 py-8">
                 <ResponsiveMasonryGrid>
                     {userImages.map((image) => (

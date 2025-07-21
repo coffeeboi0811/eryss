@@ -25,9 +25,15 @@ interface User {
 
 interface ProfilePageDetailsProps {
     user: User;
+    initialFollowStatus?: boolean;
+    initialFollowerCount?: number;
 }
 
-export default function ProfilePageDetails({ user }: ProfilePageDetailsProps) {
+export default function ProfilePageDetails({
+    user,
+    initialFollowStatus = false,
+    initialFollowerCount = 0,
+}: ProfilePageDetailsProps) {
     const { data: session } = useSession();
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [editedName, setEditedName] = useState(user.name || "");
@@ -35,6 +41,9 @@ export default function ProfilePageDetails({ user }: ProfilePageDetailsProps) {
     const [nameError, setNameError] = useState("");
     const [bioError, setBioError] = useState("");
     const [isUpdating, setIsUpdating] = useState(false);
+    const [isFollowing, setIsFollowing] = useState(initialFollowStatus);
+    const [followerCount, setFollowerCount] = useState(initialFollowerCount);
+    const [isFollowLoading, setIsFollowLoading] = useState(false);
 
     const userInitials = user.name
         ? user.name
@@ -119,6 +128,41 @@ export default function ProfilePageDetails({ user }: ProfilePageDetailsProps) {
         }
     };
 
+    const handleFollow = async () => {
+        if (isFollowLoading) return;
+        setIsFollowLoading(true);
+        try {
+            const response = await fetch(`/api/profile/${user.id}/follow`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                console.error("Follow error:", errorData.error);
+                return;
+            }
+
+            const data = await response.json();
+            setIsFollowing(data.followed);
+
+            if (data.followerCount !== undefined) {
+                setFollowerCount(data.followerCount);
+            } else {
+                // fallback: manually update count
+                setFollowerCount((prev) =>
+                    data.followed ? prev + 1 : prev - 1
+                );
+            }
+        } catch (error) {
+            console.error("Failed to follow user:", error);
+        } finally {
+            setIsFollowLoading(false);
+        }
+    };
+
     return (
         <div className="flex flex-col items-center justify-center min-h-[50vh] bg-muted/30 px-6 py-12">
             <div className="flex flex-col items-center space-y-8 max-w-lg text-center">
@@ -150,7 +194,9 @@ export default function ProfilePageDetails({ user }: ProfilePageDetailsProps) {
                         <span>Joined March 2024</span>
                     </div>
                     <p className="text-muted-foreground text-sm font-semibold">
-                        1.2k followers • 342 likes • 21 images
+                        {followerCount}{" "}
+                        {followerCount === 1 ? "follower" : "followers"} • 342
+                        likes • 21 images
                     </p>
                 </div>
                 <div className="flex gap-3">
@@ -265,8 +311,21 @@ export default function ProfilePageDetails({ user }: ProfilePageDetailsProps) {
                             </DialogContent>
                         </Dialog>
                     ) : (
-                        <Button className="bg-primary hover:bg-primary/90 text-primary-foreground cursor-pointer">
-                            Follow
+                        <Button
+                            onClick={handleFollow}
+                            disabled={isFollowLoading}
+                            variant={isFollowing ? "outline" : "default"}
+                            className={`cursor-pointer ${
+                                isFollowing
+                                    ? "hover:bg-destructive hover:text-destructive-foreground hover:border-destructive"
+                                    : "bg-primary hover:bg-primary/90 text-primary-foreground"
+                            }`}
+                        >
+                            {isFollowLoading
+                                ? "Loading..."
+                                : isFollowing
+                                ? "Unfollow"
+                                : "Follow"}
                         </Button>
                     )}
                 </div>
