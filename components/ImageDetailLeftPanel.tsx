@@ -202,7 +202,7 @@ export function ImageDetailLeftPanel({
                             </span>
                         </div>
                         <div className="flex-1" />
-                        {isAuthor && (
+                        {isAuthor ? (
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
                                     <Button
@@ -223,17 +223,20 @@ export function ImageDetailLeftPanel({
                                         disabled={isDeleting}
                                     >
                                         <Trash2 className="w-4 h-4 mr-2" />
-                                        {isDeleting ? "Deleting..." : "Delete"}
+                                        {isDeleting
+                                            ? "Deleting..."
+                                            : "Delete Image"}
                                     </DropdownMenuItem>
                                 </DropdownMenuContent>
                             </DropdownMenu>
+                        ) : (
+                            <Button
+                                size="sm"
+                                className="rounded-full px-6 py-2 font-semibold bg-primary text-primary-foreground hover:bg-primary/90 shadow cursor-pointer"
+                            >
+                                Follow
+                            </Button>
                         )}
-                        <Button
-                            size="sm"
-                            className="rounded-full px-6 py-2 font-semibold bg-primary text-primary-foreground hover:bg-primary/90 shadow cursor-pointer"
-                        >
-                            Follow
-                        </Button>
                     </div>
                 </div>
                 <div className="w-full border-t border-border" />

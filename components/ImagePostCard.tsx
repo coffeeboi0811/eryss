@@ -183,7 +183,7 @@ export function ImagePostCard({
                 priority
             />
             {isAuthor && (
-                <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <div className="absolute top-2 right-2 z-20 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                             <Button
@@ -195,20 +195,20 @@ export function ImagePostCard({
                                 <MoreVertical className="w-4 h-4" />
                             </Button>
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="w-40">
+                        <DropdownMenuContent align="end" className="w-40 z-50">
                             <DropdownMenuItem
                                 className="text-red-600 focus:text-red-700 cursor-pointer"
                                 onClick={handleDelete}
                                 disabled={isDeleting}
                             >
                                 <Trash2 className="w-4 h-4 mr-2" />
-                                {isDeleting ? "Deleting..." : "Delete"}
+                                {isDeleting ? "Deleting..." : "Delete Image"}
                             </DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>
                 </div>
             )}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end">
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end z-10">
                 <div className="p-3 flex items-end justify-between">
                     <div className="flex items-center gap-2">
                         <Avatar className="w-8 h-8 border-2 border-white cursor-pointer">
