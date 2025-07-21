@@ -129,7 +129,7 @@ export function UserMenu({ session }: UserMenuProps) {
                     Star on GitHub
                 </DropdownMenuItem>
                 <DropdownMenuItem
-                    className="flex items-center gap-2 text-red-600 cursor-pointer"
+                    className="flex items-center gap-2 text-red-600 cursor-pointer not-dark:hover:bg-red-100 dark:hover:bg-red-950/20 dark:hover:text-red-600 not-dark:hover:text-red-600 dark:hover:font-bold not-dark:hover:font-bold"
                     onClick={() => signOut()}
                 >
                     <LogOut className="w-4 h-4 text-red-600" />

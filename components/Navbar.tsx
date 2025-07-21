@@ -1,6 +1,6 @@
 "use client";
 
-import { Search, Home, Compass, Plus } from "lucide-react";
+import { Search, Home, Compass, Plus, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import Link from "next/link";
@@ -9,15 +9,21 @@ import { useRouter, usePathname } from "next/navigation";
 import { useSession, signIn } from "next-auth/react";
 import { GoogleIcon } from "./icons/GoogleIcon";
 import Image from "next/image";
+import { useState } from "react";
 
 export function Navbar() {
     const router = useRouter();
     const pathname = usePathname();
+    const [searchQuery, setSearchQuery] = useState("");
 
     const { data: session, status } = useSession();
 
     const handleLogin = () => {
         signIn("google");
+    };
+
+    const clearSearch = () => {
+        setSearchQuery("");
     };
 
     return (
@@ -42,7 +48,11 @@ export function Navbar() {
                             <Link href="/">
                                 <Button
                                     variant="ghost"
-                                    className="font-semibold text-foreground hover:bg-accent rounded-full px-4 py-2 cursor-pointer flex items-center gap-2 h-10 flex-shrink-0"
+                                    className={`font-semibold rounded-full px-4 py-2 cursor-pointer flex items-center gap-2 h-10 flex-shrink-0 ${
+                                        pathname === "/"
+                                            ? "text-foreground bg-accent"
+                                            : "text-muted-foreground hover:bg-accent"
+                                    }`}
                                 >
                                     <Home className="w-4 h-4 flex-shrink-0" />
                                     Home
@@ -51,7 +61,11 @@ export function Navbar() {
                             <Link href="/explore">
                                 <Button
                                     variant="ghost"
-                                    className="font-semibold text-muted-foreground hover:bg-accent rounded-full px-4 py-2 cursor-pointer flex items-center gap-2 h-10 flex-shrink-0"
+                                    className={`font-semibold rounded-full px-4 py-2 cursor-pointer flex items-center gap-2 h-10 flex-shrink-0 ${
+                                        pathname === "/explore"
+                                            ? "text-foreground bg-accent"
+                                            : "text-muted-foreground hover:bg-accent"
+                                    }`}
                                 >
                                     <Compass className="w-4 h-4 flex-shrink-0" />
                                     Explore
@@ -60,7 +74,11 @@ export function Navbar() {
                             <Link href="/create">
                                 <Button
                                     variant="ghost"
-                                    className="font-semibold text-muted-foreground hover:bg-accent rounded-full px-4 py-2 cursor-pointer flex items-center gap-2 h-10 flex-shrink-0"
+                                    className={`font-semibold rounded-full px-4 py-2 cursor-pointer flex items-center gap-2 h-10 flex-shrink-0 ${
+                                        pathname === "/create"
+                                            ? "text-foreground bg-accent"
+                                            : "text-muted-foreground hover:bg-accent"
+                                    }`}
                                 >
                                     <Plus className="w-4 h-4 flex-shrink-0" />
                                     Create
@@ -74,8 +92,7 @@ export function Navbar() {
                             className="relative w-full"
                             onSubmit={(e) => {
                                 e.preventDefault();
-                                const query =
-                                    e.currentTarget.search.value.trim();
+                                const query = searchQuery.trim();
                                 if (query) {
                                     router.push(
                                         `/search?q=${encodeURIComponent(query)}`
@@ -87,9 +104,20 @@ export function Navbar() {
                             <input
                                 type="text"
                                 name="search"
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
                                 placeholder="Search for images, users..."
-                                className="w-full pl-12 pr-4 py-3 bg-muted rounded-full border-0 focus:outline-none focus:ring-2 focus:ring-ring focus:bg-background transition-all duration-200 h-12 text-base"
+                                className="w-full pl-12 pr-12 py-3 bg-muted/50 border border-border/50 rounded-full focus:outline-none focus:ring-2 focus:ring-ring focus:bg-background focus:border-ring transition-all duration-200 h-12 text-base shadow-sm"
                             />
+                            {searchQuery && (
+                                <button
+                                    type="button"
+                                    onClick={clearSearch}
+                                    className="absolute right-4 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground w-5 h-5 flex-shrink-0 cursor-pointer transition-colors"
+                                >
+                                    <X className="w-5 h-5" />
+                                </button>
+                            )}
                         </form>
                     </div>
                     {/* right section */}
@@ -126,9 +154,9 @@ export function Navbar() {
                             <Image
                                 src="/logo.svg"
                                 alt="Eryss Logo"
-                                width={32}
-                                height={32}
-                                className="w-8 h-8 dark:invert"
+                                width={40}
+                                height={40}
+                                className="w-10 h-10 dark:invert"
                             />
                         </div>
                     </Link>
@@ -138,8 +166,7 @@ export function Navbar() {
                             className="relative w-full"
                             onSubmit={(e) => {
                                 e.preventDefault();
-                                const query =
-                                    e.currentTarget.search.value.trim();
+                                const query = searchQuery.trim();
                                 if (query) {
                                     router.push(
                                         `/search?q=${encodeURIComponent(query)}`
@@ -151,9 +178,20 @@ export function Navbar() {
                             <input
                                 type="text"
                                 name="search"
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
                                 placeholder="Search..."
-                                className="w-full pl-10 pr-3 py-2 bg-muted rounded-full border-0 focus:outline-none focus:ring-2 focus:ring-ring focus:bg-background transition-all duration-200 h-9 text-sm"
+                                className="w-full pl-10 pr-10 py-2 bg-muted/50 border border-border/50 rounded-full focus:outline-none focus:ring-2 focus:ring-ring focus:bg-background focus:border-ring transition-all duration-200 h-9 text-sm shadow-sm"
                             />
+                            {searchQuery && (
+                                <button
+                                    type="button"
+                                    onClick={clearSearch}
+                                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground w-4 h-4 flex-shrink-0 cursor-pointer transition-colors"
+                                >
+                                    <X className="w-4 h-4" />
+                                </button>
+                            )}
                         </form>
                     </div>
                     <div className="flex items-center h-full">
