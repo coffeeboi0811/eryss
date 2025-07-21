@@ -173,6 +173,7 @@ export function ImagePostCard({
         try {
             const response = await fetch(imageSrc);
             const blob = await response.blob();
+
             const url = URL.createObjectURL(blob);
 
             const link = document.createElement("a");
@@ -181,7 +182,8 @@ export function ImagePostCard({
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
-            URL.revokeObjectURL(url);
+
+            URL.revokeObjectURL(url); // delete the temporary blob url to avoid memory leaks
         } catch (error) {
             console.error("Download failed:", error);
         } finally {

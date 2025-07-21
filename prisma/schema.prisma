@@ -16,11 +16,13 @@ model User {
   image         String?
   bio           String?
 
-  images   Image[]
-  accounts Account[]
-  sessions Session[]
-  likes    Like[]
-  saves    Save[]
+  images    Image[]
+  accounts  Account[]
+  sessions  Session[]
+  likes     Like[]
+  saves     Save[]
+  following Follow[]  @relation("UserFollowing")
+  followers Follow[]  @relation("UserFollowers")
 
   @@map("users")
 }
@@ -69,6 +71,23 @@ model Save {
 
   @@unique([userId, imageId]) // ensures a user can save an image only once.
   @@map("saves")
+}
+
+model Follow {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // the user who is following another user
+  follower   User   @relation("UserFollowing", fields: [followerId], references: [id], onDelete: Cascade)
+  followerId String @map("follower_id")
+
+  // the user being followed
+  following   User   @relation("UserFollowers", fields: [followingId], references: [id], onDelete: Cascade)
+  followingId String @map("following_id")
+
+  @@unique([followerId, followingId]) // ensures a user can follow another user only once
+  @@map("follows")
 }
 
 model Account {
