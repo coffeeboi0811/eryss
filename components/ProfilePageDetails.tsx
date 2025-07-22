@@ -129,8 +129,8 @@ export default function ProfilePageDetails({
                 }
             }
             setIsDialogOpen(false);
-            router.refresh();
             toast.success("Profile updated successfully!");
+            router.refresh();
         } catch (error) {
             console.error("Network error:", error);
         } finally {
@@ -161,7 +161,9 @@ export default function ProfilePageDetails({
             // optimistically update follower count
             setFollowerCount((prev) => (data.followed ? prev + 1 : prev - 1));
             toast.success(
-                data.followed ? `You are now following @${userHandle}` : `Unfollowed @${userHandle}`
+                data.followed
+                    ? `You are now following @${userHandle}`
+                    : `Unfollowed @${userHandle}`
             );
         } catch (error) {
             console.error("Failed to follow user:", error);

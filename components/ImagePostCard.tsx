@@ -11,9 +11,21 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
+import { toast } from "sonner";
 
 interface ImagePostCardProps {
     imageSrc: string;
@@ -47,6 +59,7 @@ export function ImagePostCard({
     const [currentLikesCount, setCurrentLikesCount] = useState(likesCount);
     const [isDeleting, setIsDeleting] = useState(false);
     const [isDownloading, setIsDownloading] = useState(false);
+    const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
     const handleImageClick = () => {
         if (index !== undefined) {
@@ -56,7 +69,7 @@ export function ImagePostCard({
     };
 
     const handleLike = async (e: React.MouseEvent) => {
-        e.stopPropagation(); // prevent triggering image click
+        e.stopPropagation();
         if (isLiking || !index) return;
 
         setIsLiking(true);
@@ -136,14 +149,10 @@ export function ImagePostCard({
         }
     };
 
-    const handleDelete = async (e: React.MouseEvent) => {
-        e.stopPropagation(); // prevent triggering image click
+    const handleDelete = async () => {
         if (isDeleting || !index) return;
-        const confirmed = confirm(
-            "Are you sure you want to delete this image? This action cannot be undone."
-        );
-        if (!confirmed) return;
         setIsDeleting(true);
+        setShowDeleteDialog(false);
         try {
             const response = await fetch(`/api/images/${index}`, {
                 method: "DELETE",
@@ -156,7 +165,8 @@ export function ImagePostCard({
                 throw new Error("Failed to delete image");
             }
 
-            window.location.reload();
+            toast.success("Image deleted successfully");
+            router.refresh();
         } catch (error) {
             console.error("Error deleting image:", error);
             alert("Failed to delete image. Please try again.");
@@ -223,14 +233,48 @@ export function ImagePostCard({
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end" className="w-40 z-50">
-                            <DropdownMenuItem
-                                className="text-red-600 focus:text-red-700 cursor-pointer"
-                                onClick={handleDelete}
-                                disabled={isDeleting}
+                            <AlertDialog
+                                open={showDeleteDialog}
+                                onOpenChange={setShowDeleteDialog}
                             >
-                                <Trash2 className="w-4 h-4 mr-2" />
-                                {isDeleting ? "Deleting..." : "Delete Image"}
-                            </DropdownMenuItem>
+                                <AlertDialogTrigger asChild>
+                                    <DropdownMenuItem
+                                        className="text-red-600 focus:text-red-700 cursor-pointer"
+                                        onSelect={(e) => {
+                                            e.preventDefault();
+                                            setShowDeleteDialog(true);
+                                        }}
+                                        disabled={isDeleting}
+                                    >
+                                        <Trash2 className="w-4 h-4 mr-2" />
+                                        {isDeleting
+                                            ? "Deleting..."
+                                            : "Delete Image"}
+                                    </DropdownMenuItem>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent>
+                                    <AlertDialogHeader>
+                                        <AlertDialogTitle>
+                                            Delete Image
+                                        </AlertDialogTitle>
+                                        <AlertDialogDescription>
+                                            Are you sure you want to delete this
+                                            image? This action cannot be undone.
+                                        </AlertDialogDescription>
+                                    </AlertDialogHeader>
+                                    <AlertDialogFooter>
+                                        <AlertDialogCancel className="cursor-pointer">
+                                            Cancel
+                                        </AlertDialogCancel>
+                                        <AlertDialogAction
+                                            onClick={handleDelete}
+                                            className="bg-red-600 hover:bg-red-700 cursor-pointer text-white"
+                                        >
+                                            Delete
+                                        </AlertDialogAction>
+                                    </AlertDialogFooter>
+                                </AlertDialogContent>
+                            </AlertDialog>
                         </DropdownMenuContent>
                     </DropdownMenu>
                 </div>
@@ -238,7 +282,13 @@ export function ImagePostCard({
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end z-10">
                 <div className="p-3 flex items-end justify-between">
                     <div className="flex items-center gap-2">
-                        <Avatar className="w-8 h-8 border-2 border-white cursor-pointer">
+                        <Avatar
+                            className="w-8 h-8 border-2 border-white cursor-pointer"
+                            onClick={(e: React.MouseEvent<HTMLDivElement>) => {
+                                e.stopPropagation();
+                                router.push(`/user/${authorId}`);
+                            }}
+                        >
                             {authorImg ? (
                                 <AvatarImage src={authorImg} alt={authorName} />
                             ) : (

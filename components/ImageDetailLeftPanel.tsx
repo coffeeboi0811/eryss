@@ -19,9 +19,21 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { Skeleton } from "@/components/ui/skeleton";
+import { toast } from "sonner";
 
 interface ImageDetailLeftPanelProps {
     imageId: string;
@@ -59,6 +71,7 @@ export function ImageDetailLeftPanel({
     const [isDeleting, setIsDeleting] = useState(false);
     const [currentLikesCount, setCurrentLikesCount] = useState(likesCount);
     const [isDownloading, setIsDownloading] = useState(false);
+    const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
     const handleLike = async () => {
         if (isLiking) return;
@@ -141,11 +154,8 @@ export function ImageDetailLeftPanel({
 
     const handleDelete = async () => {
         if (isDeleting) return;
-        const confirmed = confirm(
-            "Are you sure you want to delete this image? This action cannot be undone."
-        );
-        if (!confirmed) return;
         setIsDeleting(true);
+        setShowDeleteDialog(false);
         try {
             const response = await fetch(`/api/images/${imageId}`, {
                 method: "DELETE",
@@ -158,6 +168,7 @@ export function ImageDetailLeftPanel({
                 throw new Error("Failed to delete image");
             }
 
+            toast.success("Image deleted successfully");
             router.push("/");
         } catch (error) {
             console.error("Error deleting image:", error);
@@ -211,9 +222,12 @@ export function ImageDetailLeftPanel({
                     </div>
                 </div>
                 <div className="w-full border-t border-border" />
-                <div className="mx-6 mt-6 mb-4 bg-card rounded-xl p-5 shadow-sm border border-border">
+                <div className="mx-6 mt-6 mb-4 bg-card rounded-xl p-5 shadow-sm border border-border hover:bg-accent/50 transition-colors">
                     <div className="flex items-center gap-4">
-                        <Avatar className="w-12 h-12 shadow cursor-pointer">
+                        <Avatar
+                            className="w-12 h-12 shadow cursor-pointer"
+                            onClick={() => router.push(`/user/${authorId}`)}
+                        >
                             {authorImg ? (
                                 <AvatarImage src={authorImg} alt={authorName} />
                             ) : (
@@ -248,16 +262,49 @@ export function ImageDetailLeftPanel({
                                     align="end"
                                     className="w-40"
                                 >
-                                    <DropdownMenuItem
-                                        className="text-red-600 focus:text-red-700 cursor-pointer"
-                                        onClick={handleDelete}
-                                        disabled={isDeleting}
+                                    <AlertDialog
+                                        open={showDeleteDialog}
+                                        onOpenChange={setShowDeleteDialog}
                                     >
-                                        <Trash2 className="w-4 h-4 mr-2" />
-                                        {isDeleting
-                                            ? "Deleting..."
-                                            : "Delete Image"}
-                                    </DropdownMenuItem>
+                                        <AlertDialogTrigger asChild>
+                                            <DropdownMenuItem
+                                                className="text-red-600 focus:text-red-700 cursor-pointer"
+                                                onSelect={(e) => {
+                                                    e.preventDefault();
+                                                    setShowDeleteDialog(true);
+                                                }}
+                                                disabled={isDeleting}
+                                            >
+                                                <Trash2 className="w-4 h-4 mr-2" />
+                                                {isDeleting
+                                                    ? "Deleting..."
+                                                    : "Delete Image"}
+                                            </DropdownMenuItem>
+                                        </AlertDialogTrigger>
+                                        <AlertDialogContent>
+                                            <AlertDialogHeader>
+                                                <AlertDialogTitle>
+                                                    Delete Image
+                                                </AlertDialogTitle>
+                                                <AlertDialogDescription>
+                                                    Are you sure you want to
+                                                    delete this image? This
+                                                    action cannot be undone.
+                                                </AlertDialogDescription>
+                                            </AlertDialogHeader>
+                                            <AlertDialogFooter>
+                                                <AlertDialogCancel className="cursor-pointer">
+                                                    Cancel
+                                                </AlertDialogCancel>
+                                                <AlertDialogAction
+                                                    onClick={handleDelete}
+                                                    className="bg-red-600 hover:bg-red-700 cursor-pointer text-white"
+                                                >
+                                                    Delete
+                                                </AlertDialogAction>
+                                            </AlertDialogFooter>
+                                        </AlertDialogContent>
+                                    </AlertDialog>
                                 </DropdownMenuContent>
                             </DropdownMenu>
                         ) : (
