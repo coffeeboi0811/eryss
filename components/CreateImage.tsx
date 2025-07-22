@@ -4,10 +4,13 @@ import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Upload, X, AlertCircle, CheckCircle, Loader2 } from "lucide-react";
+import { Upload, X, AlertCircle, Loader2 } from "lucide-react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 export default function CreateImage() {
+    const router = useRouter();
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
@@ -19,7 +22,6 @@ export default function CreateImage() {
         submit: "",
     });
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [submitSuccess, setSubmitSuccess] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const validateTitle = (value: string) => {
@@ -143,7 +145,6 @@ export default function CreateImage() {
         }
 
         setIsSubmitting(true);
-        setSubmitSuccess(false);
 
         try {
             const response = await fetch("/api/images", {
@@ -165,18 +166,9 @@ export default function CreateImage() {
                 throw new Error(data.error || "Failed to create image");
             }
 
-            setSubmitSuccess(true);
-            setSelectedImage(null);
-            setTitle("");
-            setDescription("");
-            setErrors({ title: "", description: "", image: "", submit: "" });
-            if (fileInputRef.current) {
-                fileInputRef.current.value = "";
-            }
-
-            setTimeout(() => {
-                setSubmitSuccess(false);
-            }, 3000);
+            // show success toast and redirect to the created image
+            toast.success("Image uploaded successfully!");
+            router.push(`/image/${data.image.id}`);
         } catch (error) {
             console.error("Error creating image:", error);
             setErrors((prev) => ({
@@ -204,15 +196,25 @@ export default function CreateImage() {
                     <div className="sticky top-20">
                         {!selectedImage ? (
                             <div
-                                className={`relative w-full h-96 lg:h-[600px] border-2 border-dashed rounded-2xl transition-colors cursor-pointer ${
-                                    isDragging
-                                        ? "border-primary bg-primary/10"
-                                        : "border-border bg-muted/30 hover:bg-muted/50"
+                                className={`relative w-full h-96 lg:h-[600px] border-2 border-dashed rounded-2xl transition-colors ${
+                                    isSubmitting
+                                        ? "cursor-not-allowed opacity-50 border-border bg-muted/20"
+                                        : isDragging
+                                        ? "border-primary bg-primary/10 cursor-pointer"
+                                        : "border-border bg-muted/30 hover:bg-muted/50 cursor-pointer"
                                 }`}
-                                onDragOver={handleDragOver}
-                                onDragLeave={handleDragLeave}
-                                onDrop={handleDrop}
-                                onClick={() => fileInputRef.current?.click()}
+                                onDragOver={
+                                    isSubmitting ? undefined : handleDragOver
+                                }
+                                onDragLeave={
+                                    isSubmitting ? undefined : handleDragLeave
+                                }
+                                onDrop={isSubmitting ? undefined : handleDrop}
+                                onClick={
+                                    isSubmitting
+                                        ? undefined
+                                        : () => fileInputRef.current?.click()
+                                }
                             >
                                 <div className="flex flex-col items-center justify-center h-full p-8">
                                     <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mb-4">
@@ -234,6 +236,7 @@ export default function CreateImage() {
                                     accept="image/png, image/jpeg, image/jpg, image/webp, image/gif"
                                     className="hidden"
                                     onChange={handleFileInputChange}
+                                    disabled={isSubmitting}
                                 />
                                 {errors.image && (
                                     <div className="absolute bottom-4 left-4 right-4 bg-red-50 dark:bg-red-950 border border-red-200 dark:border-red-800 rounded-lg p-3">
@@ -260,6 +263,7 @@ export default function CreateImage() {
                                         size="icon"
                                         className="absolute top-4 right-4 rounded-full"
                                         onClick={removeImage}
+                                        disabled={isSubmitting}
                                     >
                                         <X className="w-4 h-4" />
                                     </Button>
@@ -284,6 +288,7 @@ export default function CreateImage() {
                                 placeholder="Add a title (3-100 characters)"
                                 value={title}
                                 onChange={handleTitleChange}
+                                disabled={isSubmitting}
                                 className={`w-full ${
                                     errors.title
                                         ? "border-red-500 focus:border-red-500"
@@ -314,6 +319,7 @@ export default function CreateImage() {
                                 placeholder="Add a detailed description (optional, max 300 characters)"
                                 value={description}
                                 onChange={handleDescriptionChange}
+                                disabled={isSubmitting}
                                 className={`w-full min-h-32 resize-none ${
                                     errors.description
                                         ? "border-red-500 focus:border-red-500"
@@ -346,15 +352,6 @@ export default function CreateImage() {
                                     <p className="text-sm text-red-600 dark:text-red-400 flex items-center gap-2">
                                         <AlertCircle className="w-4 h-4" />
                                         {errors.submit}
-                                    </p>
-                                </div>
-                            )}
-
-                            {submitSuccess && (
-                                <div className="mb-4 bg-green-50 dark:bg-green-950 border border-green-200 dark:border-green-800 rounded-lg p-3">
-                                    <p className="text-sm text-green-600 dark:text-green-400 flex items-center gap-2">
-                                        <CheckCircle className="w-4 h-4" />
-                                        Image uploaded successfully!
                                     </p>
                                 </div>
                             )}
