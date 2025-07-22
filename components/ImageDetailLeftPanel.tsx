@@ -458,7 +458,7 @@ export function ImageDetailLeftPanel({
                         </p>
                     )}
                     <div className="w-full border-t border-border mb-6" />
-                    <div className="flex gap-3 mb-8 md:mb-0 overflow-x-auto">
+                    <div className="flex flex-wrap gap-3 mb-8 md:mb-0 overflow-hidden">
                         <Button
                             className={`flex-1 shadow cursor-pointer ${
                                 isLiked
