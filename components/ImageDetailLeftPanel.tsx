@@ -47,6 +47,7 @@ interface ImageDetailLeftPanelProps {
     initialLiked?: boolean;
     initialSaved?: boolean;
     likesCount?: number;
+    followersCount?: number;
 }
 
 export function ImageDetailLeftPanel({
@@ -61,6 +62,7 @@ export function ImageDetailLeftPanel({
     initialLiked = false,
     initialSaved = false,
     likesCount = 0,
+    followersCount = 0,
 }: ImageDetailLeftPanelProps) {
     const router = useRouter();
     const { data: session, status } = useSession();
@@ -241,7 +243,10 @@ export function ImageDetailLeftPanel({
                                 {authorName}
                             </span>
                             <span className="text-xs text-muted-foreground mt-0.5">
-                                1.2k followers
+                                {followersCount}{" "}
+                                {followersCount === 1
+                                    ? "follower"
+                                    : "followers"}
                             </span>
                         </div>
                         <div className="flex-1" />

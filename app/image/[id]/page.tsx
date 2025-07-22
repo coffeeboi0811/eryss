@@ -27,6 +27,11 @@ export default async function ImageDetailPage({
                     id: true,
                     name: true,
                     image: true,
+                    _count: {
+                        select: {
+                            followers: true,
+                        },
+                    },
                 },
             },
             _count: {
@@ -139,6 +144,7 @@ export default async function ImageDetailPage({
                 description: image.description || undefined,
                 createdAt: image.createdAt,
                 likesCount: image._count.likes,
+                followersCount: image.user?._count?.followers,
             }}
             relatedImages={shuffledRelatedImages.map((img) => ({
                 id: img.id,

@@ -18,6 +18,7 @@ interface ImageDetailPageWrapperProps {
         description?: string;
         createdAt?: Date;
         likesCount?: number;
+        followersCount?: number;
     };
     relatedImages: Array<{
         id: string;
@@ -80,6 +81,7 @@ export function ImageDetailPageWrapper({
                         initialLiked={initialLiked}
                         initialSaved={initialSaved}
                         likesCount={imageData.likesCount}
+                        followersCount={imageData.followersCount}
                     />
                 </div>
             </div>

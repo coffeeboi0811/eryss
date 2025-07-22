@@ -20,7 +20,6 @@ import {
     AlertDialogFooter,
     AlertDialogHeader,
     AlertDialogTitle,
-    AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
@@ -149,7 +148,8 @@ export function ImagePostCard({
         }
     };
 
-    const handleDelete = async () => {
+    const handleDelete = async (e: React.MouseEvent) => {
+        e.stopPropagation();
         if (isDeleting || !index) return;
         setIsDeleting(true);
         setShowDeleteDialog(false);
@@ -233,52 +233,52 @@ export function ImagePostCard({
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end" className="w-40 z-50">
-                            <AlertDialog
-                                open={showDeleteDialog}
-                                onOpenChange={setShowDeleteDialog}
+                            <DropdownMenuItem
+                                className="text-red-600 focus:text-red-700 cursor-pointer"
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    setShowDeleteDialog(true);
+                                }}
+                                disabled={isDeleting}
                             >
-                                <AlertDialogTrigger asChild>
-                                    <DropdownMenuItem
-                                        className="text-red-600 focus:text-red-700 cursor-pointer"
-                                        onSelect={(e) => {
-                                            e.preventDefault();
-                                            setShowDeleteDialog(true);
-                                        }}
-                                        disabled={isDeleting}
-                                    >
-                                        <Trash2 className="w-4 h-4 mr-2" />
-                                        {isDeleting
-                                            ? "Deleting..."
-                                            : "Delete Image"}
-                                    </DropdownMenuItem>
-                                </AlertDialogTrigger>
-                                <AlertDialogContent>
-                                    <AlertDialogHeader>
-                                        <AlertDialogTitle>
-                                            Delete Image
-                                        </AlertDialogTitle>
-                                        <AlertDialogDescription>
-                                            Are you sure you want to delete this
-                                            image? This action cannot be undone.
-                                        </AlertDialogDescription>
-                                    </AlertDialogHeader>
-                                    <AlertDialogFooter>
-                                        <AlertDialogCancel className="cursor-pointer">
-                                            Cancel
-                                        </AlertDialogCancel>
-                                        <AlertDialogAction
-                                            onClick={handleDelete}
-                                            className="bg-red-600 hover:bg-red-700 cursor-pointer text-white"
-                                        >
-                                            Delete
-                                        </AlertDialogAction>
-                                    </AlertDialogFooter>
-                                </AlertDialogContent>
-                            </AlertDialog>
+                                <Trash2 className="w-4 h-4 mr-2" />
+                                {isDeleting ? "Deleting..." : "Delete Image"}
+                            </DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>
                 </div>
             )}
+
+            <AlertDialog
+                open={showDeleteDialog}
+                onOpenChange={setShowDeleteDialog}
+            >
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>Delete Image</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            Are you sure you want to delete this image? This
+                            action cannot be undone.
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel
+                            className="cursor-pointer"
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            Cancel
+                        </AlertDialogCancel>
+                        <AlertDialogAction
+                            onClick={handleDelete}
+                            className="bg-red-600 hover:bg-red-700 cursor-pointer text-white"
+                        >
+                            Delete
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
+
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end z-10">
                 <div className="p-3 flex items-end justify-between">
                     <div className="flex items-center gap-2">
