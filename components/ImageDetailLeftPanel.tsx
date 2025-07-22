@@ -36,6 +36,7 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
+import { formatDistanceToNow } from "date-fns";
 
 interface ImageDetailLeftPanelProps {
     imageId: string;
@@ -271,6 +272,17 @@ export function ImageDetailLeftPanel({
         }
     };
 
+    const handleShare = async () => {
+        try {
+            const imageUrl = `${window.location.origin}/image/${imageId}`;
+            await navigator.clipboard.writeText(imageUrl);
+            toast.success("Link copied to clipboard!");
+        } catch (error) {
+            console.error("Failed to copy link:", error);
+            toast.error("Failed to copy link");
+        }
+    };
+
     const isAuthor = session?.user?.id === authorId;
     return (
         <div className="flex flex-col h-full bg-muted/30">
@@ -419,7 +431,9 @@ export function ImageDetailLeftPanel({
                             <span>
                                 Posted{" "}
                                 {createdAt
-                                    ? new Date(createdAt).toLocaleDateString()
+                                    ? formatDistanceToNow(new Date(createdAt), {
+                                          addSuffix: true,
+                                      })
                                     : "recently"}
                             </span>
                             {currentLikesCount > 0 && (
@@ -464,6 +478,7 @@ export function ImageDetailLeftPanel({
                         <Button
                             variant="outline"
                             className="flex-1 shadow-sm cursor-pointer"
+                            onClick={handleShare}
                         >
                             <Share className="w-4 h-4 mr-2" />
                             Share

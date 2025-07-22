@@ -18,12 +18,14 @@ import { useSession } from "next-auth/react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { formatDistanceToNow } from "date-fns";
 
 interface User {
     id: string;
     name: string | null;
     image: string | null;
     bio: string | null;
+    createdAt: Date;
 }
 
 interface ProfilePageDetailsProps {
@@ -172,6 +174,17 @@ export default function ProfilePageDetails({
         }
     };
 
+    const handleShare = async () => {
+        try {
+            const profileUrl = `${window.location.origin}/user/${user.id}`;
+            await navigator.clipboard.writeText(profileUrl);
+            toast.success("Profile link copied to clipboard!");
+        } catch (error) {
+            console.error("Failed to copy link:", error);
+            toast.error("Failed to copy link");
+        }
+    };
+
     return (
         <div className="flex flex-col items-center justify-center min-h-[50vh] bg-muted/30 px-6 py-12">
             <div className="flex flex-col items-center space-y-8 max-w-lg text-center">
@@ -200,7 +213,17 @@ export default function ProfilePageDetails({
                     </p>
                     <div className="flex items-center justify-center gap-2 text-muted-foreground text-sm">
                         <Calendar className="w-3 h-3" />
-                        <span>Joined March 2024</span>
+                        <span>
+                            Joined{" "}
+                            {user.createdAt
+                                ? formatDistanceToNow(
+                                      new Date(user.createdAt),
+                                      {
+                                          addSuffix: true,
+                                      }
+                                  )
+                                : "recently"}
+                        </span>
                     </div>
                     <p className="text-muted-foreground text-sm font-semibold">
                         {followerCount}{" "}
@@ -213,6 +236,7 @@ export default function ProfilePageDetails({
                     <Button
                         variant="outline"
                         className="shadow-sm cursor-pointer"
+                        onClick={handleShare}
                     >
                         <Share className="w-4 h-4 mr-2" />
                         Share
