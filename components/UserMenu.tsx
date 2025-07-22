@@ -68,7 +68,7 @@ export function UserMenu({ session }: UserMenuProps) {
             <Tooltip>
                 <TooltipTrigger asChild>
                     <DropdownMenuTrigger asChild>
-                        <Avatar className="cursor-pointer border-2 border-transparent hover:border-muted transition w-11 h-11">
+                        <Avatar className="cursor-pointer border-2 border-transparent hover:border-muted transition-all duration-200 hover:scale-105 w-11 h-11">
                             <AvatarImage src={user?.image || ""} alt="User" />
                             <AvatarFallback className="bg-gradient-to-tr from-fuchsia-500 to-pink-400 text-white font-bold text-lg">
                                 {userInitials}
@@ -155,21 +155,21 @@ export function UserMenu({ session }: UserMenuProps) {
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
-                    className="flex items-center gap-2 cursor-pointer hover:text-pink-600"
+                    className="flex items-center gap-2 cursor-pointer transition-colors duration-200 hover:text-pink-600 hover:bg-pink-50 dark:hover:bg-pink-950/20 focus:text-pink-600 focus:bg-pink-50 dark:focus:bg-pink-950/20"
                     onClick={() => router.push("/likes")}
                 >
                     <Heart className="w-4 h-4 text-pink-500" />
                     Liked images
                 </DropdownMenuItem>
                 <DropdownMenuItem
-                    className="flex items-center gap-2 cursor-pointer hover:text-blue-600"
+                    className="flex items-center gap-2 cursor-pointer transition-colors duration-200 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-950/20 focus:text-blue-600 focus:bg-blue-50 dark:focus:bg-blue-950/20"
                     onClick={() => router.push("/saved")}
                 >
                     <Bookmark className="w-4 h-4 text-blue-500" />
                     Saved images
                 </DropdownMenuItem>
                 <DropdownMenuItem
-                    className="flex items-center gap-2 cursor-pointer hover:text-yellow-600"
+                    className="flex items-center gap-2 cursor-pointer transition-colors duration-200 hover:text-yellow-600 hover:bg-yellow-50 dark:hover:bg-yellow-950/20 focus:text-yellow-600 focus:bg-yellow-50 dark:focus:bg-yellow-950/20"
                     onClick={() =>
                         window.open(
                             "https://github.com/coffeeboi0811/eryss",
@@ -183,7 +183,7 @@ export function UserMenu({ session }: UserMenuProps) {
                 <AlertDialog>
                     <AlertDialogTrigger asChild>
                         <DropdownMenuItem
-                            className="flex items-center gap-2 text-red-600 cursor-pointer hover:bg-red-100 dark:hover:bg-red-950/20 not-dark:hover:text-red-600 dark:hover:text-red-600 dark:hover:font-bold not-dark:hover:font-bold"
+                            className="flex items-center gap-2 text-red-600 cursor-pointer hover:bg-red-100 dark:hover:bg-red-950/20 not-dark:hover:text-red-600 dark:hover:text-red-600 dark:hover:font-bold not-dark:hover:font-bold transition-all duration-200"
                             onSelect={(e) => e.preventDefault()}
                         >
                             <LogOut className="w-4 h-4 text-red-600" />
@@ -205,7 +205,7 @@ export function UserMenu({ session }: UserMenuProps) {
                                 Cancel
                             </AlertDialogCancel>
                             <AlertDialogAction
-                                className="bg-red-600 hover:bg-red-700 text-white cursor-pointer"
+                                className="bg-red-600 hover:bg-red-700 text-white cursor-pointer transition-colors duration-200"
                                 onClick={handleLogout}
                             >
                                 Log out

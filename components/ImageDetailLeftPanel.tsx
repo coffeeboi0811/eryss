@@ -181,7 +181,8 @@ export function ImageDetailLeftPanel({
         }
     };
 
-    const handleDelete = async () => {
+    const handleDelete = async (e: React.MouseEvent) => {
+        e.stopPropagation();
         if (isDeleting) return;
         setIsDeleting(true);
         setShowDeleteDialog(false);
@@ -350,8 +351,9 @@ export function ImageDetailLeftPanel({
                                         <AlertDialogTrigger asChild>
                                             <DropdownMenuItem
                                                 className="text-red-600 focus:text-red-700 cursor-pointer"
-                                                onSelect={(e) => {
+                                                onClick={(e) => {
                                                     e.preventDefault();
+                                                    e.stopPropagation();
                                                     setShowDeleteDialog(true);
                                                 }}
                                                 disabled={isDeleting}
@@ -374,7 +376,12 @@ export function ImageDetailLeftPanel({
                                                 </AlertDialogDescription>
                                             </AlertDialogHeader>
                                             <AlertDialogFooter>
-                                                <AlertDialogCancel className="cursor-pointer">
+                                                <AlertDialogCancel
+                                                    className="cursor-pointer"
+                                                    onClick={(e) =>
+                                                        e.stopPropagation()
+                                                    }
+                                                >
                                                     Cancel
                                                 </AlertDialogCancel>
                                                 <AlertDialogAction
@@ -397,14 +404,17 @@ export function ImageDetailLeftPanel({
                                 }}
                                 disabled={isFollowLoading}
                                 variant={isFollowing ? "outline" : "default"}
-                                className={`rounded-full px-6 py-2 font-semibold shadow cursor-pointer ${
+                                className={`rounded-full px-6 py-2 font-semibold shadow cursor-pointer transition-all duration-200 ${
                                     isFollowing
-                                        ? "hover:bg-destructive hover:text-destructive-foreground hover:border-destructive"
-                                        : "bg-primary text-primary-foreground hover:bg-primary/90"
+                                        ? "hover:bg-destructive hover:text-destructive-foreground hover:border-destructive hover:scale-105"
+                                        : "bg-primary text-primary-foreground hover:bg-primary/90 hover:scale-105"
                                 }`}
                             >
                                 {isFollowLoading ? (
-                                    "Loading..."
+                                    <div className="flex items-center gap-2">
+                                        <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"></div>
+                                        Loading...
+                                    </div>
                                 ) : isFollowing ? (
                                     <>
                                         <UserMinus className="w-4 h-4 mr-2" />
@@ -501,12 +511,19 @@ export function ImageDetailLeftPanel({
                         </Button>
                         <Button
                             variant="outline"
-                            className="flex-1 shadow-sm cursor-pointer"
+                            className="flex-1 shadow-sm cursor-pointer hover:scale-105 transition-all duration-200"
                             onClick={handleDownload}
                             disabled={isDownloading}
                         >
                             <Download className="w-4 h-4 mr-2" />
-                            {isDownloading ? "Downloading..." : "Download"}
+                            {isDownloading ? (
+                                <div className="flex items-center gap-2">
+                                    <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"></div>
+                                    Downloading...
+                                </div>
+                            ) : (
+                                "Download"
+                            )}
                         </Button>
                     </div>
                 </div>

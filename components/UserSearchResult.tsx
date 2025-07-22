@@ -116,14 +116,17 @@ export function UserSearchResult({
                     }}
                     disabled={isFollowLoading}
                     variant={isFollowing ? "outline" : "default"}
-                    className={`rounded-full px-6 py-2 font-semibold shadow cursor-pointer ${
+                    className={`rounded-full px-6 py-2 font-semibold shadow cursor-pointer transition-all duration-200 ${
                         isFollowing
-                            ? "hover:bg-destructive hover:text-destructive-foreground hover:border-destructive"
-                            : "bg-primary text-primary-foreground hover:bg-primary/90"
+                            ? "hover:bg-destructive hover:text-destructive-foreground hover:border-destructive hover:scale-105"
+                            : "bg-primary text-primary-foreground hover:bg-primary/90 hover:scale-105"
                     }`}
                 >
                     {isFollowLoading ? (
-                        "Loading..."
+                        <div className="flex items-center gap-2">
+                            <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"></div>
+                            Loading...
+                        </div>
                     ) : isFollowing ? (
                         <>
                             <UserMinus className="w-4 h-4 mr-2" />

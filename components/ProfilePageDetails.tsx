@@ -188,7 +188,7 @@ export default function ProfilePageDetails({
     return (
         <div className="flex flex-col items-center justify-center min-h-[50vh] bg-muted/30 px-6 py-12">
             <div className="flex flex-col items-center space-y-8 max-w-lg text-center">
-                <Avatar className="w-32 h-32 cursor-pointer shadow-lg">
+                <Avatar className="w-32 h-32 cursor-pointer shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300">
                     <AvatarImage
                         src={user.image || ""}
                         alt={user.name || "User Avatar"}
@@ -353,14 +353,17 @@ export default function ProfilePageDetails({
                             onClick={handleFollow}
                             disabled={isFollowLoading}
                             variant={isFollowing ? "outline" : "default"}
-                            className={`cursor-pointer ${
+                            className={`cursor-pointer transition-all duration-200 ${
                                 isFollowing
-                                    ? "hover:bg-destructive hover:text-destructive-foreground hover:border-destructive"
-                                    : "bg-primary hover:bg-primary/90 text-primary-foreground"
+                                    ? "hover:bg-destructive hover:text-destructive-foreground hover:border-destructive hover:scale-105"
+                                    : "bg-primary hover:bg-primary/90 text-primary-foreground hover:scale-105"
                             }`}
                         >
                             {isFollowLoading ? (
-                                "Loading..."
+                                <div className="flex items-center gap-2">
+                                    <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"></div>
+                                    Loading...
+                                </div>
                             ) : isFollowing ? (
                                 <>
                                     <UserMinus className="w-4 h-4 mr-2" />

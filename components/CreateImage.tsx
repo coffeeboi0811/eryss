@@ -199,12 +199,12 @@ export default function CreateImage() {
                     <div className="sticky top-20">
                         {!selectedImage ? (
                             <div
-                                className={`relative w-full h-96 lg:h-[600px] border-2 border-dashed rounded-2xl transition-colors ${
+                                className={`relative w-full h-96 lg:h-[600px] border-2 border-dashed rounded-2xl transition-all duration-200 ${
                                     isSubmitting
                                         ? "cursor-not-allowed opacity-50 border-border bg-muted/20"
                                         : isDragging
-                                        ? "border-primary bg-primary/10 cursor-pointer"
-                                        : "border-border bg-muted/30 hover:bg-muted/50 cursor-pointer"
+                                        ? "border-primary bg-primary/10 cursor-pointer scale-[0.98] border-solid"
+                                        : "border-border bg-muted/30 hover:bg-muted/50 hover:border-muted-foreground/30 cursor-pointer"
                                 }`}
                                 onDragOver={
                                     isSubmitting ? undefined : handleDragOver
@@ -258,13 +258,13 @@ export default function CreateImage() {
                                         alt="Selected image"
                                         width={600}
                                         height={800}
-                                        className="w-full h-auto object-cover"
+                                        className="w-full h-auto object-cover rounded-2xl"
                                     />
                                     <Button
                                         type="button"
                                         variant="secondary"
                                         size="icon"
-                                        className="absolute top-4 right-4 rounded-full"
+                                        className="absolute top-4 right-4 rounded-full hover:scale-110 transition-transform duration-200"
                                         onClick={removeImage}
                                         disabled={isSubmitting}
                                     >
@@ -292,10 +292,10 @@ export default function CreateImage() {
                                 value={title}
                                 onChange={handleTitleChange}
                                 disabled={isSubmitting}
-                                className={`w-full ${
+                                className={`w-full transition-all duration-200 focus:scale-[1.01] ${
                                     errors.title
-                                        ? "border-red-500 focus:border-red-500"
-                                        : ""
+                                        ? "border-red-500 focus:border-red-500 animate-pulse"
+                                        : "hover:border-muted-foreground/40"
                                 }`}
                             />
                             {errors.title && (
@@ -323,10 +323,10 @@ export default function CreateImage() {
                                 value={description}
                                 onChange={handleDescriptionChange}
                                 disabled={isSubmitting}
-                                className={`w-full min-h-32 resize-none ${
+                                className={`w-full min-h-32 resize-none transition-all duration-200 focus:scale-[1.01] ${
                                     errors.description
-                                        ? "border-red-500 focus:border-red-500"
-                                        : ""
+                                        ? "border-red-500 focus:border-red-500 animate-pulse"
+                                        : "hover:border-muted-foreground/40"
                                 }`}
                             />
                             <div className="flex justify-between items-center mt-1">
@@ -361,7 +361,7 @@ export default function CreateImage() {
 
                             <Button
                                 type="submit"
-                                className="w-full bg-primary text-primary-foreground hover:bg-primary/90 shadow font-semibold cursor-pointer"
+                                className="w-full bg-primary text-primary-foreground hover:bg-primary/90 hover:scale-[1.02] shadow font-semibold cursor-pointer transition-all duration-200"
                                 disabled={
                                     !selectedImage ||
                                     !title.trim() ||
