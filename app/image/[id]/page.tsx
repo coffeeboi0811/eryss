@@ -72,6 +72,20 @@ export default async function ImageDetailPage({
         isSaved = !!saveRecord;
     }
 
+    // check if current user is following the image author
+    let isFollowingAuthor = false;
+    if (session?.user?.id && session.user.id !== image.user?.id) {
+        const followRecord = await prisma.follow.findUnique({
+            where: {
+                followerId_followingId: {
+                    followerId: session.user.id,
+                    followingId: image.user.id,
+                },
+            },
+        });
+        isFollowingAuthor = !!followRecord;
+    }
+
     // related images (excluding current image)
     const relatedImages = await prisma.image.findMany({
         where: {
@@ -158,6 +172,7 @@ export default async function ImageDetailPage({
             }))}
             initialLiked={isLiked}
             initialSaved={isSaved}
+            initialFollowing={isFollowingAuthor}
         />
     );
 }

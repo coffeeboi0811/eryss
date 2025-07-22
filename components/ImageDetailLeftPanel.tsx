@@ -11,6 +11,8 @@ import {
     Clock,
     MoreVertical,
     Trash2,
+    UserPlus,
+    UserMinus,
 } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import {
@@ -48,6 +50,7 @@ interface ImageDetailLeftPanelProps {
     initialSaved?: boolean;
     likesCount?: number;
     followersCount?: number;
+    initialFollowing?: boolean;
 }
 
 export function ImageDetailLeftPanel({
@@ -63,6 +66,7 @@ export function ImageDetailLeftPanel({
     initialSaved = false,
     likesCount = 0,
     followersCount = 0,
+    initialFollowing = false,
 }: ImageDetailLeftPanelProps) {
     const router = useRouter();
     const { data: session, status } = useSession();
@@ -74,6 +78,17 @@ export function ImageDetailLeftPanel({
     const [currentLikesCount, setCurrentLikesCount] = useState(likesCount);
     const [isDownloading, setIsDownloading] = useState(false);
     const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+    const [isFollowing, setIsFollowing] = useState(initialFollowing);
+    const [currentFollowersCount, setCurrentFollowersCount] =
+        useState(followersCount);
+    const [isFollowLoading, setIsFollowLoading] = useState(false);
+
+    const userHandle =
+        authorName
+            ?.trim()
+            .toLowerCase()
+            .replace(/\s+/g, "_")
+            .replace(/[^a-z0-9_]/g, "") || "user";
 
     const handleLike = async () => {
         if (isLiking) return;
@@ -207,6 +222,41 @@ export function ImageDetailLeftPanel({
         }
     };
 
+    const handleFollow = async () => {
+        if (isFollowLoading || !authorId) return;
+        setIsFollowLoading(true);
+        try {
+            const response = await fetch(`/api/profile/${authorId}/follow`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
+            if (!response.ok) {
+                const errorData = await response.json();
+                console.error("Follow error:", errorData.error);
+                return;
+            }
+            const data = await response.json();
+            setIsFollowing(data.followed);
+
+            // optimistically update follower count
+            setCurrentFollowersCount((prev) =>
+                data.followed ? prev + 1 : prev - 1
+            );
+
+            toast.success(
+                data.followed
+                    ? `You are now following @${userHandle}`
+                    : `Unfollowed @${userHandle}`
+            );
+        } catch (error) {
+            console.error("Failed to follow user:", error);
+        } finally {
+            setIsFollowLoading(false);
+        }
+    };
+
     const isAuthor = session?.user?.id === authorId;
     return (
         <div className="flex flex-col h-full bg-muted/30">
@@ -243,8 +293,8 @@ export function ImageDetailLeftPanel({
                                 {authorName}
                             </span>
                             <span className="text-xs text-muted-foreground mt-0.5">
-                                {followersCount}{" "}
-                                {followersCount === 1
+                                {currentFollowersCount}{" "}
+                                {currentFollowersCount === 1
                                     ? "follower"
                                     : "followers"}
                             </span>
@@ -315,10 +365,31 @@ export function ImageDetailLeftPanel({
                         ) : (
                             <Button
                                 size="sm"
-                                className="rounded-full px-6 py-2 font-semibold bg-primary text-primary-foreground hover:bg-primary/90 shadow cursor-pointer"
-                                onClick={(e) => e.stopPropagation()}
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleFollow();
+                                }}
+                                disabled={isFollowLoading}
+                                variant={isFollowing ? "outline" : "default"}
+                                className={`rounded-full px-6 py-2 font-semibold shadow cursor-pointer ${
+                                    isFollowing
+                                        ? "hover:bg-destructive hover:text-destructive-foreground hover:border-destructive"
+                                        : "bg-primary text-primary-foreground hover:bg-primary/90"
+                                }`}
                             >
-                                Follow
+                                {isFollowLoading ? (
+                                    "Loading..."
+                                ) : isFollowing ? (
+                                    <>
+                                        <UserMinus className="w-4 h-4 mr-2" />
+                                        Unfollow
+                                    </>
+                                ) : (
+                                    <>
+                                        <UserPlus className="w-4 h-4 mr-2" />
+                                        Follow
+                                    </>
+                                )}
                             </Button>
                         )}
                     </div>

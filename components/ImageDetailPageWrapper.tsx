@@ -32,6 +32,7 @@ interface ImageDetailPageWrapperProps {
     }>;
     initialLiked?: boolean;
     initialSaved?: boolean;
+    initialFollowing?: boolean;
 }
 
 export function ImageDetailPageWrapper({
@@ -40,6 +41,7 @@ export function ImageDetailPageWrapper({
     relatedImages,
     initialLiked = false,
     initialSaved = false,
+    initialFollowing = false,
 }: ImageDetailPageWrapperProps) {
     const router = useRouter();
 
@@ -82,6 +84,7 @@ export function ImageDetailPageWrapper({
                         initialSaved={initialSaved}
                         likesCount={imageData.likesCount}
                         followersCount={imageData.followersCount}
+                        initialFollowing={initialFollowing}
                     />
                 </div>
             </div>

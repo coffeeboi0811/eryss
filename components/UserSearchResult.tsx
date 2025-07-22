@@ -1,8 +1,12 @@
 "use client";
 
+import { useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import { UserPlus, UserMinus } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
+import { toast } from "sonner";
 
 interface UserSearchResultProps {
     avatarSrc: string;
@@ -10,6 +14,7 @@ interface UserSearchResultProps {
     bio: string;
     userId: string;
     followersCount?: number;
+    initialFollowing?: boolean;
 }
 
 export function UserSearchResult({
@@ -18,8 +23,14 @@ export function UserSearchResult({
     bio,
     userId,
     followersCount = 0,
+    initialFollowing = false,
 }: UserSearchResultProps) {
     const router = useRouter();
+    const { data: session } = useSession();
+    const [isFollowing, setIsFollowing] = useState(initialFollowing);
+    const [currentFollowersCount, setCurrentFollowersCount] =
+        useState(followersCount);
+    const [isFollowLoading, setIsFollowLoading] = useState(false);
     const truncatedBio =
         bio && bio.length > 120 ? bio.substring(0, 120) + "..." : bio;
 
@@ -32,6 +43,42 @@ export function UserSearchResult({
 
     const handleUserClick = () => {
         router.push(`/user/${userId}`);
+    };
+
+    const handleFollow = async () => {
+        if (isFollowLoading) return;
+        setIsFollowLoading(true);
+        try {
+            const response = await fetch(`/api/profile/${userId}/follow`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
+            if (!response.ok) {
+                const errorData = await response.json();
+                console.error("Follow error:", errorData.error);
+                return;
+            }
+
+            const data = await response.json();
+            setIsFollowing(data.followed);
+
+            // optimistically update follower count
+            setCurrentFollowersCount((prev) =>
+                data.followed ? prev + 1 : prev - 1
+            );
+
+            toast.success(
+                data.followed
+                    ? `You are now following @${userHandle}`
+                    : `Unfollowed @${userHandle}`
+            );
+        } catch (error) {
+            console.error("Failed to follow user:", error);
+        } finally {
+            setIsFollowLoading(false);
+        }
     };
 
     return (
@@ -53,22 +100,43 @@ export function UserSearchResult({
                     @{userHandle}
                 </p>
                 <p className="text-muted-foreground text-sm mb-2">
-                    {followersCount}{" "}
-                    {followersCount === 1 ? "follower" : "followers"}
+                    {currentFollowersCount}{" "}
+                    {currentFollowersCount === 1 ? "follower" : "followers"}
                 </p>
                 <p className="text-foreground text-sm leading-5">
                     {truncatedBio || "No bio available"}
                 </p>
             </div>
-            <Button
-                size="sm"
-                className="rounded-full px-6 py-2 font-semibold bg-primary text-primary-foreground hover:bg-primary/90 shadow cursor-pointer"
-                onClick={(e) => {
-                    e.stopPropagation();
-                }}
-            >
-                Follow
-            </Button>
+            {session?.user?.id && session.user.id !== userId ? (
+                <Button
+                    size="sm"
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        handleFollow();
+                    }}
+                    disabled={isFollowLoading}
+                    variant={isFollowing ? "outline" : "default"}
+                    className={`rounded-full px-6 py-2 font-semibold shadow cursor-pointer ${
+                        isFollowing
+                            ? "hover:bg-destructive hover:text-destructive-foreground hover:border-destructive"
+                            : "bg-primary text-primary-foreground hover:bg-primary/90"
+                    }`}
+                >
+                    {isFollowLoading ? (
+                        "Loading..."
+                    ) : isFollowing ? (
+                        <>
+                            <UserMinus className="w-4 h-4 mr-2" />
+                            Unfollow
+                        </>
+                    ) : (
+                        <>
+                            <UserPlus className="w-4 h-4 mr-2" />
+                            Follow
+                        </>
+                    )}
+                </Button>
+            ) : null}
         </div>
     );
 }

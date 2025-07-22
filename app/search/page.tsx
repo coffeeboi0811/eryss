@@ -101,6 +101,24 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
         userSaves = saves.map((save) => save.imageId);
     }
 
+    // fetch follow statuses for searched users
+    let userFollowStatuses: string[] = [];
+    if (session?.user?.id) {
+        const searchedUserIds = searchedUsers.map((user) => user.id);
+        const follows = await prisma.follow.findMany({
+            where: {
+                followerId: session.user.id,
+                followingId: {
+                    in: searchedUserIds,
+                },
+            },
+            select: {
+                followingId: true,
+            },
+        });
+        userFollowStatuses = follows.map((follow) => follow.followingId);
+    }
+
     return (
         <div className="min-h-screen bg-background w-full">
             <div className="w-full px-4 py-8">
@@ -174,6 +192,9 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
                                             followersCount={
                                                 user._count.followers
                                             }
+                                            initialFollowing={userFollowStatuses.includes(
+                                                user.id
+                                            )}
                                         />
                                     ))}
                                 </div>
