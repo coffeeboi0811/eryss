@@ -18,6 +18,11 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import {
+    Tooltip,
+    TooltipTrigger,
+    TooltipContent,
+} from "@/components/ui/tooltip";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
     LogOut,
@@ -54,14 +59,19 @@ export function UserMenu({ session }: UserMenuProps) {
 
     return (
         <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-                <Avatar className="cursor-pointer border-2 border-transparent hover:border-muted transition w-11 h-11">
-                    <AvatarImage src={user?.image || ""} alt="Retard" />
-                    <AvatarFallback className="bg-gradient-to-tr from-fuchsia-500 to-pink-400 text-white font-bold text-lg">
-                        {userInitials}
-                    </AvatarFallback>
-                </Avatar>
-            </DropdownMenuTrigger>
+            <Tooltip>
+                <TooltipTrigger asChild>
+                    <DropdownMenuTrigger asChild>
+                        <Avatar className="cursor-pointer border-2 border-transparent hover:border-muted transition w-11 h-11">
+                            <AvatarImage src={user?.image || ""} alt="User" />
+                            <AvatarFallback className="bg-gradient-to-tr from-fuchsia-500 to-pink-400 text-white font-bold text-lg">
+                                {userInitials}
+                            </AvatarFallback>
+                        </Avatar>
+                    </DropdownMenuTrigger>
+                </TooltipTrigger>
+                <TooltipContent>{user?.name || "Profile"}</TooltipContent>
+            </Tooltip>
             <DropdownMenuContent align="end" className="w-64 p-2 space-y-3">
                 <DropdownMenuItem
                     className="flex items-center gap-3 cursor-pointer text-xl"
@@ -75,7 +85,7 @@ export function UserMenu({ session }: UserMenuProps) {
                     </Avatar>
                     <div className="flex flex-col overflow-hidden">
                         <span className="text-lg font-medium truncate">
-                            {user?.name || "Retard"}
+                            {user?.name || "User"}
                         </span>
                         <span className="text-sm text-muted-foreground truncate">
                             {user?.email || "No email"}
@@ -86,30 +96,55 @@ export function UserMenu({ session }: UserMenuProps) {
                 <DropdownMenuItem className="flex flex-col gap-2 py-2">
                     <span className="text-sm text-foreground mb-1">Theme</span>
                     <div className="flex items-center gap-2">
-                        <Button
-                            variant={theme === "system" ? "default" : "outline"}
-                            size="icon"
-                            className="rounded-full w-8 h-8 flex items-center justify-center cursor-pointer"
-                            onClick={() => setTheme("system")}
-                        >
-                            <Monitor className="w-5 h-5" />
-                        </Button>
-                        <Button
-                            variant={theme === "light" ? "default" : "outline"}
-                            size="icon"
-                            className="rounded-full w-8 h-8 flex items-center justify-center cursor-pointer"
-                            onClick={() => setTheme("light")}
-                        >
-                            <Sun className="w-5 h-5" />
-                        </Button>
-                        <Button
-                            variant={theme === "dark" ? "default" : "outline"}
-                            size="icon"
-                            className="rounded-full w-8 h-8 flex items-center justify-center cursor-pointer"
-                            onClick={() => setTheme("dark")}
-                        >
-                            <Moon className="w-5 h-5" />
-                        </Button>
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                <Button
+                                    variant={
+                                        theme === "system"
+                                            ? "default"
+                                            : "outline"
+                                    }
+                                    size="icon"
+                                    className="rounded-full w-8 h-8 flex items-center justify-center cursor-pointer"
+                                    onClick={() => setTheme("system")}
+                                >
+                                    <Monitor className="w-5 h-5" />
+                                </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>System Theme</TooltipContent>
+                        </Tooltip>
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                <Button
+                                    variant={
+                                        theme === "light"
+                                            ? "default"
+                                            : "outline"
+                                    }
+                                    size="icon"
+                                    className="rounded-full w-8 h-8 flex items-center justify-center cursor-pointer"
+                                    onClick={() => setTheme("light")}
+                                >
+                                    <Sun className="w-5 h-5" />
+                                </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>Light Mode</TooltipContent>
+                        </Tooltip>
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                <Button
+                                    variant={
+                                        theme === "dark" ? "default" : "outline"
+                                    }
+                                    size="icon"
+                                    className="rounded-full w-8 h-8 flex items-center justify-center cursor-pointer"
+                                    onClick={() => setTheme("dark")}
+                                >
+                                    <Moon className="w-5 h-5" />
+                                </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>Dark Mode</TooltipContent>
+                        </Tooltip>
                     </div>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />

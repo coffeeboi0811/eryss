@@ -21,6 +21,11 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import {
+    Tooltip,
+    TooltipTrigger,
+    TooltipContent,
+} from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import { useRouter, usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
@@ -306,21 +311,33 @@ export function ImagePostCard({
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end z-10">
                 <div className="p-3 flex items-end justify-between">
                     <div className="flex items-center gap-2">
-                        <Avatar
-                            className="w-8 h-8 border-2 border-white cursor-pointer"
-                            onClick={(e: React.MouseEvent<HTMLDivElement>) => {
-                                e.stopPropagation();
-                                router.push(`/user/${authorId}`);
-                            }}
-                        >
-                            {authorImg ? (
-                                <AvatarImage src={authorImg} alt={authorName} />
-                            ) : (
-                                <AvatarFallback className="bg-white/20 text-white text-xs">
-                                    {authorName?.[0] || "A"}
-                                </AvatarFallback>
-                            )}
-                        </Avatar>
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                <Avatar
+                                    className="w-8 h-8 border-2 border-white cursor-pointer"
+                                    onClick={(
+                                        e: React.MouseEvent<HTMLDivElement>
+                                    ) => {
+                                        e.stopPropagation();
+                                        router.push(`/user/${authorId}`);
+                                    }}
+                                >
+                                    {authorImg ? (
+                                        <AvatarImage
+                                            src={authorImg}
+                                            alt={authorName}
+                                        />
+                                    ) : (
+                                        <AvatarFallback className="bg-white/20 text-white text-xs">
+                                            {authorName?.[0] || "A"}
+                                        </AvatarFallback>
+                                    )}
+                                </Avatar>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                                {authorName || "View profile"}
+                            </TooltipContent>
+                        </Tooltip>
                         {currentLikesCount > 0 && (
                             <span className="text-white text-xs font-medium bg-black/30 px-2 py-1 rounded-full">
                                 {currentLikesCount}{" "}
@@ -329,49 +346,68 @@ export function ImagePostCard({
                         )}
                     </div>
                     <div className="flex gap-1">
-                        <Button
-                            size="sm"
-                            variant="ghost"
-                            className={`h-8 w-8 p-0 cursor-pointer transition-all duration-200 ${
-                                isLiked
-                                    ? "text-red-400 hover:bg-red-500/30"
-                                    : "text-white hover:bg-red-500/30 hover:text-red-400"
-                            }`}
-                            onClick={handleLike}
-                            disabled={isLiking}
-                        >
-                            <Heart
-                                className={`w-4 h-4 ${
-                                    isLiked ? "fill-current" : ""
-                                }`}
-                            />
-                        </Button>
-                        <Button
-                            size="sm"
-                            variant="ghost"
-                            className={`h-8 w-8 p-0 cursor-pointer transition-all duration-200 ${
-                                isSaved
-                                    ? "text-blue-400 hover:bg-blue-500/30"
-                                    : "text-white hover:bg-blue-500/30 hover:text-blue-400"
-                            }`}
-                            onClick={handleSave}
-                            disabled={isSaving}
-                        >
-                            <Bookmark
-                                className={`w-4 h-4 ${
-                                    isSaved ? "fill-current" : ""
-                                }`}
-                            />
-                        </Button>
-                        <Button
-                            size="sm"
-                            variant="ghost"
-                            className="text-white hover:bg-green-500/30 hover:text-green-400 h-8 w-8 p-0 cursor-pointer transition-all duration-200"
-                            onClick={handleDownload}
-                            disabled={isDownloading}
-                        >
-                            <Download className="w-4 h-4" />
-                        </Button>
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                <Button
+                                    size="sm"
+                                    variant="ghost"
+                                    className={`h-8 w-8 p-0 cursor-pointer transition-all duration-200 ${
+                                        isLiked
+                                            ? "text-red-400 hover:bg-red-500/30"
+                                            : "text-white hover:bg-red-500/30 hover:text-red-400"
+                                    }`}
+                                    onClick={handleLike}
+                                    disabled={isLiking}
+                                >
+                                    <Heart
+                                        className={`w-4 h-4 ${
+                                            isLiked ? "fill-current" : ""
+                                        }`}
+                                    />
+                                </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                                {isLiked ? "Unlike" : "Like"}
+                            </TooltipContent>
+                        </Tooltip>
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                <Button
+                                    size="sm"
+                                    variant="ghost"
+                                    className={`h-8 w-8 p-0 cursor-pointer transition-all duration-200 ${
+                                        isSaved
+                                            ? "text-blue-400 hover:bg-blue-500/30"
+                                            : "text-white hover:bg-blue-500/30 hover:text-blue-400"
+                                    }`}
+                                    onClick={handleSave}
+                                    disabled={isSaving}
+                                >
+                                    <Bookmark
+                                        className={`w-4 h-4 ${
+                                            isSaved ? "fill-current" : ""
+                                        }`}
+                                    />
+                                </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                                {isSaved ? "Unsave" : "Save"}
+                            </TooltipContent>
+                        </Tooltip>
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                <Button
+                                    size="sm"
+                                    variant="ghost"
+                                    className="text-white hover:bg-green-500/30 hover:text-green-400 h-8 w-8 p-0 cursor-pointer transition-all duration-200"
+                                    onClick={handleDownload}
+                                    disabled={isDownloading}
+                                >
+                                    <Download className="w-4 h-4" />
+                                </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>Download</TooltipContent>
+                        </Tooltip>
                     </div>
                 </div>
             </div>

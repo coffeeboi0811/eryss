@@ -3,6 +3,11 @@
 import { Search, Home, Compass, Plus, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import {
+    Tooltip,
+    TooltipTrigger,
+    TooltipContent,
+} from "@/components/ui/tooltip";
 import Link from "next/link";
 import { UserMenu } from "./UserMenu";
 import { useRouter, usePathname } from "next/navigation";
@@ -35,17 +40,25 @@ export function Navbar() {
                 <div className="flex items-center justify-between px-4 py-0 h-full space-x-4">
                     {/* left section */}
                     <div className="flex items-center space-x-4 h-full">
-                        <Link href="/" className="flex items-center h-full">
-                            <div className="flex items-center justify-center flex-shrink-0">
-                                <Image
-                                    src="/logo.svg"
-                                    alt="Eryss Logo"
-                                    width={64}
-                                    height={64}
-                                    className="w-16 h-16 dark:invert"
-                                />
-                            </div>
-                        </Link>
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                <Link
+                                    href="/"
+                                    className="flex items-center h-full"
+                                >
+                                    <div className="flex items-center justify-center flex-shrink-0">
+                                        <Image
+                                            src="/logo.svg"
+                                            alt="Eryss Logo"
+                                            width={64}
+                                            height={64}
+                                            className="w-16 h-16 dark:invert"
+                                        />
+                                    </div>
+                                </Link>
+                            </TooltipTrigger>
+                            <TooltipContent>Eryss</TooltipContent>
+                        </Tooltip>
                         <div className="flex items-center space-x-2 h-full">
                             <Link href="/">
                                 <Button

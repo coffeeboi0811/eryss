@@ -124,7 +124,7 @@ export default function ProfilePageDetails({
                     return;
                 } else if (data.error) {
                     // handle generic errors
-                    console.error("Profile update error:", data.error);
+                    toast.error(data.error || "Failed to update profile");
                     return;
                 }
             }
@@ -133,6 +133,7 @@ export default function ProfilePageDetails({
             router.refresh();
         } catch (error) {
             console.error("Network error:", error);
+            toast.error("Failed to update profile. Please try again.");
         } finally {
             setIsUpdating(false);
         }

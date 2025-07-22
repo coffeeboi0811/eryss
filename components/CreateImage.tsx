@@ -158,12 +158,21 @@ export default function CreateImage() {
                     imageBase64: selectedImage,
                 }),
             });
-
             const data = await response.json();
 
             if (!response.ok) {
-                console.log(data);
-                throw new Error(data.error || "Failed to create image");
+                if (data.error) {
+                    setErrors((prev) => ({
+                        ...prev,
+                        submit: data.error || "Failed to create image",
+                    }));
+                    return;
+                }
+                setErrors((prev) => ({
+                    ...prev,
+                    submit: "An unexpected error occurred. Please try again.",
+                }));
+                return;
             }
 
             // show success toast and redirect to the created image
@@ -171,13 +180,7 @@ export default function CreateImage() {
             router.push(`/image/${data.image.id}`);
         } catch (error) {
             console.error("Error creating image:", error);
-            setErrors((prev) => ({
-                ...prev,
-                submit:
-                    error instanceof Error
-                        ? error.message
-                        : "An unexpected error occurred. Please try again.",
-            }));
+            toast.error("Failed to create image. Please try again.");
         } finally {
             setIsSubmitting(false);
         }
