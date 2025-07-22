@@ -48,6 +48,12 @@ export function UserMenu({ session }: UserMenuProps) {
     const { setTheme, theme } = useTheme();
 
     const user = session?.user;
+
+    const handleLogout = () => {
+        signOut({
+            callbackUrl: "/",
+        });
+    };
     const userInitials = user?.name
         ? user.name
               .split(" ")
@@ -200,11 +206,7 @@ export function UserMenu({ session }: UserMenuProps) {
                             </AlertDialogCancel>
                             <AlertDialogAction
                                 className="bg-red-600 hover:bg-red-700 text-white cursor-pointer"
-                                onClick={() =>
-                                    signOut({
-                                        callbackUrl: "/",
-                                    })
-                                }
+                                onClick={handleLogout}
                             >
                                 Log out
                             </AlertDialogAction>

@@ -14,7 +14,9 @@ import { useRouter, usePathname } from "next/navigation";
 import { useSession, signIn } from "next-auth/react";
 import { GoogleIcon } from "./icons/GoogleIcon";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
+import { celebrateLogin } from "@/lib/confetti";
 
 export function Navbar() {
     const router = useRouter();
@@ -23,15 +25,38 @@ export function Navbar() {
 
     const { data: session, status } = useSession();
 
-    const handleLogin = () => {
-        signIn("google", {
-            callbackUrl: `${window.location.href}/`,
-        });
+    const handleLogin = async () => {
+        sessionStorage.setItem("loginAttempt", "true");
+        try {
+            await signIn("google", {
+                callbackUrl: window.location.href,
+            });
+        } catch (error) {
+            console.error("Error signing in:", error);
+            toast.error("Failed to sign in. Please try again.");
+        }
     };
 
     const clearSearch = () => {
         setSearchQuery("");
     };
+
+    useEffect(() => {
+        if (session?.user && sessionStorage.getItem("loginAttempt")) {
+            sessionStorage.removeItem("loginAttempt");
+            toast.success(
+                `🎉 Welcome to Eryss${
+                    session.user.name ? `, ${session.user.name}` : ", friend"
+                }!`,
+                {
+                    description:
+                        "You've successfully signed in with Google. Start exploring amazing images!",
+                    duration: 5000,
+                }
+            );
+            celebrateLogin();
+        }
+    }, [session]);
 
     return (
         <>
