@@ -114,11 +114,16 @@ export function ImageDetailLeftPanel({
                 }),
             });
 
+            const data = await response.json();
+
             if (!response.ok) {
-                throw new Error("Failed to like image");
+                toast.error(data.error || "Failed to like image");
+                // revert optimistic update
+                setIsLiked(originalLiked);
+                setCurrentLikesCount(originalCount);
+                return;
             }
 
-            const data = await response.json();
             setIsLiked(data.liked);
             // update likes count based on the response
             setCurrentLikesCount(
@@ -126,6 +131,7 @@ export function ImageDetailLeftPanel({
             );
         } catch (error) {
             console.error("Error liking image:", error);
+            toast.error("Failed to like image. Please try again.");
             // revert optimistic update
             setIsLiked(originalLiked);
             setCurrentLikesCount(originalCount);
@@ -154,14 +160,19 @@ export function ImageDetailLeftPanel({
                 }),
             });
 
+            const data = await response.json();
+
             if (!response.ok) {
-                throw new Error("Failed to save image");
+                toast.error(data.error || "Failed to save image");
+                // revert optimistic update
+                setIsSaved(originalSaved);
+                return;
             }
 
-            const data = await response.json();
             setIsSaved(data.saved);
         } catch (error) {
             console.error("Error saving image:", error);
+            toast.error("Failed to save image. Please try again.");
             // revert optimistic update
             setIsSaved(originalSaved);
         } finally {
@@ -180,16 +191,18 @@ export function ImageDetailLeftPanel({
                     "Content-Type": "application/json",
                 },
             });
+            const data = await response.json();
 
             if (!response.ok) {
-                throw new Error("Failed to delete image");
+                toast.error(data.error || "Failed to delete image");
+                return;
             }
 
             toast.success("Image deleted successfully");
             router.push("/");
         } catch (error) {
             console.error("Error deleting image:", error);
-            alert("Failed to delete image. Please try again.");
+            toast.error("Failed to delete image. Please try again.");
         } finally {
             setIsDeleting(false);
         }
@@ -217,6 +230,7 @@ export function ImageDetailLeftPanel({
             URL.revokeObjectURL(url); // delete the temporary blob url to avoid memory leaks
         } catch (error) {
             console.error("Download failed:", error);
+            toast.error("Failed to download image. Please try again.");
         } finally {
             setIsDownloading(false);
         }
@@ -232,19 +246,18 @@ export function ImageDetailLeftPanel({
                     "Content-Type": "application/json",
                 },
             });
+            const data = await response.json();
+
             if (!response.ok) {
-                const errorData = await response.json();
-                console.error("Follow error:", errorData.error);
+                toast.error(data.error || "Failed to follow user");
                 return;
             }
-            const data = await response.json();
-            setIsFollowing(data.followed);
 
+            setIsFollowing(data.followed);
             // optimistically update follower count
             setCurrentFollowersCount((prev) =>
                 data.followed ? prev + 1 : prev - 1
             );
-
             toast.success(
                 data.followed
                     ? `You are now following @${userHandle}`
@@ -252,6 +265,7 @@ export function ImageDetailLeftPanel({
             );
         } catch (error) {
             console.error("Failed to follow user:", error);
+            toast.error("Failed to follow user. Please try again.");
         } finally {
             setIsFollowLoading(false);
         }

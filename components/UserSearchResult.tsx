@@ -55,15 +55,14 @@ export function UserSearchResult({
                     "Content-Type": "application/json",
                 },
             });
+            const data = await response.json();
+
             if (!response.ok) {
-                const errorData = await response.json();
-                console.error("Follow error:", errorData.error);
+                toast.error(data.error || "Failed to follow user");
                 return;
             }
 
-            const data = await response.json();
             setIsFollowing(data.followed);
-
             // optimistically update follower count
             setCurrentFollowersCount((prev) =>
                 data.followed ? prev + 1 : prev - 1
@@ -76,6 +75,7 @@ export function UserSearchResult({
             );
         } catch (error) {
             console.error("Failed to follow user:", error);
+            toast.error("Failed to follow user. Please try again.");
         } finally {
             setIsFollowLoading(false);
         }
@@ -107,7 +107,7 @@ export function UserSearchResult({
                     {truncatedBio || "No bio available"}
                 </p>
             </div>
-            {session?.user?.id && session.user.id !== userId ? (
+            {session?.user?.id !== userId ? (
                 <Button
                     size="sm"
                     onClick={(e) => {

@@ -148,16 +148,14 @@ export default function ProfilePageDetails({
                     "Content-Type": "application/json",
                 },
             });
+            const data = await response.json();
 
             if (!response.ok) {
-                const errorData = await response.json();
-                console.error("Follow error:", errorData.error);
+                toast.error(data.error || "Failed to follow user");
                 return;
             }
 
-            const data = await response.json();
             setIsFollowing(data.followed);
-
             // optimistically update follower count
             setFollowerCount((prev) => (data.followed ? prev + 1 : prev - 1));
             toast.success(
@@ -167,6 +165,7 @@ export default function ProfilePageDetails({
             );
         } catch (error) {
             console.error("Failed to follow user:", error);
+            toast.error("Failed to follow user. Please try again.");
         } finally {
             setIsFollowLoading(false);
         }

@@ -93,11 +93,16 @@ export function ImagePostCard({
                 }),
             });
 
+            const data = await response.json();
+
             if (!response.ok) {
-                throw new Error("Failed to like image");
+                toast.error(data.error || "Failed to like image");
+                // revert optimistic update
+                setIsLiked(originalLiked);
+                setCurrentLikesCount(originalCount);
+                return;
             }
 
-            const data = await response.json();
             setIsLiked(data.liked);
             // update likes count based on the response
             setCurrentLikesCount(
@@ -110,6 +115,7 @@ export function ImagePostCard({
             }
         } catch (error) {
             console.error("Error liking image:", error);
+            toast.error("Failed to like image. Please try again.");
             // revert optimistic update
             setIsLiked(originalLiked);
             setCurrentLikesCount(originalCount);
@@ -139,11 +145,15 @@ export function ImagePostCard({
                 }),
             });
 
+            const data = await response.json();
+
             if (!response.ok) {
-                throw new Error("Failed to save image");
+                toast.error(data.error || "Failed to save image");
+                // revert optimistic update
+                setIsSaved(originalSaved);
+                return;
             }
 
-            const data = await response.json();
             setIsSaved(data.saved);
 
             // refresh the page if on saved page to update the UI
@@ -152,6 +162,7 @@ export function ImagePostCard({
             }
         } catch (error) {
             console.error("Error saving image:", error);
+            toast.error("Failed to save image. Please try again.");
             // revert optimistic update
             setIsSaved(originalSaved);
         } finally {
@@ -171,16 +182,18 @@ export function ImagePostCard({
                     "Content-Type": "application/json",
                 },
             });
+            const data = await response.json();
 
             if (!response.ok) {
-                throw new Error("Failed to delete image");
+                toast.error(data.error || "Failed to delete image");
+                return;
             }
 
             toast.success("Image deleted successfully");
             router.refresh();
         } catch (error) {
             console.error("Error deleting image:", error);
-            alert("Failed to delete image. Please try again.");
+            toast.error("Failed to delete image. Please try again.");
         } finally {
             setIsDeleting(false);
         }
