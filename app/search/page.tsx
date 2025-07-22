@@ -69,6 +69,11 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
             name: true,
             image: true,
             bio: true,
+            _count: {
+                select: {
+                    followers: true,
+                },
+            },
         },
     });
 
@@ -166,6 +171,9 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
                                             fullName={user.name || ""}
                                             bio={user.bio || ""}
                                             userId={user.id}
+                                            followersCount={
+                                                user._count.followers
+                                            }
                                         />
                                     ))}
                                 </div>

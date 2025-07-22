@@ -9,6 +9,7 @@ interface UserSearchResultProps {
     fullName: string;
     bio: string;
     userId: string;
+    followersCount?: number;
 }
 
 export function UserSearchResult({
@@ -16,6 +17,7 @@ export function UserSearchResult({
     fullName,
     bio,
     userId,
+    followersCount = 0,
 }: UserSearchResultProps) {
     const router = useRouter();
     const truncatedBio =
@@ -34,7 +36,7 @@ export function UserSearchResult({
 
     return (
         <div
-            className="flex items-start gap-4 p-4 bg-card transition-colors border border-border rounded-xl hover:bg-accent/50 cursor-pointer"
+            className="flex items-start gap-4 p-4 bg-card transition-colors border border-border rounded-xl hover:bg-accent/75 cursor-pointer"
             onClick={handleUserClick}
         >
             <Avatar className="w-14 h-14 flex-shrink-0">
@@ -51,7 +53,8 @@ export function UserSearchResult({
                     @{userHandle}
                 </p>
                 <p className="text-muted-foreground text-sm mb-2">
-                    69.9k followers
+                    {followersCount}{" "}
+                    {followersCount === 1 ? "follower" : "followers"}
                 </p>
                 <p className="text-foreground text-sm leading-5">
                     {truncatedBio || "No bio available"}

@@ -61,23 +61,34 @@ export default async function SavedImagesPage() {
                         Here are the images you have saved from the community
                     </p>
                 </div>
-                <ResponsiveMasonryGrid>
-                    {savedImages.map((image) => (
-                        <ImagePostCard
-                            key={image.image.id}
-                            imageSrc={image.image.imageUrl}
-                            authorImg={image.image.user.image || undefined}
-                            authorName={image.image.user.name || undefined}
-                            authorId={image.image.user.id}
-                            index={image.image.id}
-                            initialLiked={likedImageIds.includes(
-                                image.image.id
-                            )}
-                            initialSaved={true}
-                            likesCount={image.image._count.likes}
-                        />
-                    ))}
-                </ResponsiveMasonryGrid>
+                {savedImages.length > 0 ? (
+                    <ResponsiveMasonryGrid>
+                        {savedImages.map((image) => (
+                            <ImagePostCard
+                                key={image.image.id}
+                                imageSrc={image.image.imageUrl}
+                                authorImg={image.image.user.image || undefined}
+                                authorName={image.image.user.name || undefined}
+                                authorId={image.image.user.id}
+                                index={image.image.id}
+                                initialLiked={likedImageIds.includes(
+                                    image.image.id
+                                )}
+                                initialSaved={true}
+                                likesCount={image.image._count.likes}
+                            />
+                        ))}
+                    </ResponsiveMasonryGrid>
+                ) : (
+                    <div className="text-center py-16">
+                        <p className="text-muted-foreground text-lg">
+                            No saved images yet
+                        </p>
+                        <p className="text-muted-foreground text-sm mt-2">
+                            Start exploring and save images for later
+                        </p>
+                    </div>
+                )}
             </div>
         </div>
     );

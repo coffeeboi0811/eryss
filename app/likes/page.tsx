@@ -61,23 +61,34 @@ export default async function LikedImagesPage() {
                         Here are the images you have liked from the community
                     </p>
                 </div>
-                <ResponsiveMasonryGrid>
-                    {likedImages.map((image) => (
-                        <ImagePostCard
-                            key={image.image.id}
-                            imageSrc={image.image.imageUrl}
-                            authorImg={image.image.user.image || undefined}
-                            authorName={image.image.user.name || undefined}
-                            authorId={image.image.user.id}
-                            index={image.image.id}
-                            initialLiked={true}
-                            initialSaved={savedImageIds.includes(
-                                image.image.id
-                            )}
-                            likesCount={image.image._count.likes}
-                        />
-                    ))}
-                </ResponsiveMasonryGrid>
+                {likedImages.length > 0 ? (
+                    <ResponsiveMasonryGrid>
+                        {likedImages.map((image) => (
+                            <ImagePostCard
+                                key={image.image.id}
+                                imageSrc={image.image.imageUrl}
+                                authorImg={image.image.user.image || undefined}
+                                authorName={image.image.user.name || undefined}
+                                authorId={image.image.user.id}
+                                index={image.image.id}
+                                initialLiked={true}
+                                initialSaved={savedImageIds.includes(
+                                    image.image.id
+                                )}
+                                likesCount={image.image._count.likes}
+                            />
+                        ))}
+                    </ResponsiveMasonryGrid>
+                ) : (
+                    <div className="text-center py-16">
+                        <p className="text-muted-foreground text-lg">
+                            No liked images yet
+                        </p>
+                        <p className="text-muted-foreground text-sm mt-2">
+                            Start exploring and like images you find interesting
+                        </p>
+                    </div>
+                )}
             </div>
         </div>
     );

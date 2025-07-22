@@ -22,7 +22,7 @@ import {
     AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { cn } from "@/lib/utils";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { toast } from "sonner";
 
@@ -50,6 +50,7 @@ export function ImagePostCard({
     likesCount = 0,
 }: ImagePostCardProps) {
     const router = useRouter();
+    const pathname = usePathname();
     const { data: session } = useSession();
     const [isLiked, setIsLiked] = useState(initialLiked);
     const [isSaved, setIsSaved] = useState(initialSaved);
@@ -102,6 +103,11 @@ export function ImagePostCard({
             setCurrentLikesCount(
                 data.liked ? originalCount + 1 : originalCount - 1
             );
+
+            // refresh the page if on likes page or explore page to update the UI
+            if (pathname === "/likes" || pathname === "/explore") {
+                router.refresh();
+            }
         } catch (error) {
             console.error("Error liking image:", error);
             // revert optimistic update
@@ -139,6 +145,11 @@ export function ImagePostCard({
 
             const data = await response.json();
             setIsSaved(data.saved);
+
+            // refresh the page if on saved page to update the UI
+            if (pathname === "/saved") {
+                router.refresh();
+            }
         } catch (error) {
             console.error("Error saving image:", error);
             // revert optimistic update

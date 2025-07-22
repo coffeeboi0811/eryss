@@ -110,21 +110,46 @@ export default async function UserProfilePage({
                 imageCount={user._count.images}
             />
             <main className="w-full px-4 py-8">
-                <ResponsiveMasonryGrid>
-                    {userImages.map((image) => (
-                        <ImagePostCard
-                            key={image.id}
-                            imageSrc={image.imageUrl}
-                            authorImg={image.user.image || undefined}
-                            authorName={image.user.name || undefined}
-                            authorId={image.user.id}
-                            index={image.id}
-                            initialLiked={userLikes.includes(image.id)}
-                            initialSaved={userSaves.includes(image.id)}
-                            likesCount={image._count.likes}
-                        />
-                    ))}
-                </ResponsiveMasonryGrid>
+                {userImages.length > 0 ? (
+                    <ResponsiveMasonryGrid>
+                        {userImages.map((image) => (
+                            <ImagePostCard
+                                key={image.id}
+                                imageSrc={image.imageUrl}
+                                authorImg={image.user.image || undefined}
+                                authorName={image.user.name || undefined}
+                                authorId={image.user.id}
+                                index={image.id}
+                                initialLiked={userLikes.includes(image.id)}
+                                initialSaved={userSaves.includes(image.id)}
+                                likesCount={image._count.likes}
+                            />
+                        ))}
+                    </ResponsiveMasonryGrid>
+                ) : (
+                    <div className="text-center py-16">
+                        {session?.user?.id === user.id ? (
+                            <>
+                                <p className="text-muted-foreground text-lg">
+                                    You have no posts yet
+                                </p>
+                                <p className="text-muted-foreground text-sm mt-2">
+                                    Create some amazing content to share with
+                                    the community
+                                </p>
+                            </>
+                        ) : (
+                            <>
+                                <p className="text-muted-foreground text-lg">
+                                    @{user.name || "User"} has no posts yet
+                                </p>
+                                <p className="text-muted-foreground text-sm mt-2">
+                                    Check back later for new content
+                                </p>
+                            </>
+                        )}
+                    </div>
+                )}
             </main>
         </div>
     );

@@ -224,16 +224,16 @@ export function ImageDetailLeftPanel({
                     </div>
                 </div>
                 <div className="w-full border-t border-border" />
-                <div className="mx-6 mt-6 mb-4 bg-card rounded-xl p-5 shadow-sm border border-border hover:bg-accent/50 transition-colors">
+                <div
+                    className="mx-6 mt-6 mb-4 bg-card rounded-xl p-5 shadow-sm border border-border hover:bg-accent/75 transition-colors cursor-pointer"
+                    onClick={() => router.push(`/user/${authorId}`)}
+                >
                     <div className="flex items-center gap-4">
-                        <Avatar
-                            className="w-12 h-12 shadow cursor-pointer"
-                            onClick={() => router.push(`/user/${authorId}`)}
-                        >
+                        <Avatar className="w-12 h-12 shadow">
                             {authorImg ? (
                                 <AvatarImage src={authorImg} alt={authorName} />
                             ) : (
-                                <AvatarFallback className="bg-muted text-muted-foreground cursor-pointer">
+                                <AvatarFallback className="bg-muted text-muted-foreground">
                                     {authorName?.[0] || "A"}
                                 </AvatarFallback>
                             )}
@@ -316,6 +316,7 @@ export function ImageDetailLeftPanel({
                             <Button
                                 size="sm"
                                 className="rounded-full px-6 py-2 font-semibold bg-primary text-primary-foreground hover:bg-primary/90 shadow cursor-pointer"
+                                onClick={(e) => e.stopPropagation()}
                             >
                                 Follow
                             </Button>

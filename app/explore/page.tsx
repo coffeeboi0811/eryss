@@ -38,7 +38,7 @@ export default async function ExplorePage() {
                 createdAt: "desc",
             },
         ],
-        take: 50, // limit to top 50 trending images
+        take: 20, // limit to top 20 trending images
         include: {
             user: {
                 select: {
