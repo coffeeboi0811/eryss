@@ -6,6 +6,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import SessionWrapper from "@/components/SessionWrapper";
 import { PageTransition } from "@/components/PageTransition";
 import { Toaster } from "sonner";
+import { Analytics } from "@vercel/analytics/next";
 
 const geistSans = Geist({
     variable: "--font-geist-sans",
@@ -121,6 +122,7 @@ export default function RootLayout({
                         duration={1500}
                         className="z-50"
                     />
+                    <Analytics />
                 </ThemeProvider>
             </body>
         </html>
