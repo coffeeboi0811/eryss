@@ -30,6 +30,8 @@ import { cn } from "@/lib/utils";
 import { useRouter, usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { toast } from "sonner";
+import { motion } from "framer-motion";
+import { itemVariants } from "@/components/ResponsiveMasonryGrid";
 
 interface ImagePostCardProps {
     imageSrc: string;
@@ -65,6 +67,17 @@ export function ImagePostCard({
     const [isDeleting, setIsDeleting] = useState(false);
     const [isDownloading, setIsDownloading] = useState(false);
     const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+
+    const likeVariants = {
+        idle: { scale: 1 },
+        liked: {
+            scale: [1, 1.3, 1.1, 1],
+            transition: {
+                duration: 0.4,
+                times: [0, 0.3, 0.7, 1],
+            },
+        },
+    };
 
     const handleImageClick = () => {
         if (index !== undefined) {
@@ -233,7 +246,10 @@ export function ImagePostCard({
     const isAuthor = session?.user?.id === authorId;
 
     return (
-        <div
+        <motion.div
+            variants={itemVariants}
+            initial="hidden"
+            animate="visible"
             className={cn(
                 "group relative overflow-hidden rounded-2xl shadow-sm transition-all cursor-zoom-in w-full block break-inside-avoid mb-4",
                 className
@@ -359,11 +375,16 @@ export function ImagePostCard({
                                     onClick={handleLike}
                                     disabled={isLiking}
                                 >
-                                    <Heart
-                                        className={`w-4 h-4 ${
-                                            isLiked ? "fill-current" : ""
-                                        }`}
-                                    />
+                                    <motion.div
+                                        variants={likeVariants}
+                                        animate={isLiked ? "liked" : "idle"}
+                                    >
+                                        <Heart
+                                            className={`w-4 h-4 ${
+                                                isLiked ? "fill-current" : ""
+                                            }`}
+                                        />
+                                    </motion.div>
                                 </Button>
                             </TooltipTrigger>
                             <TooltipContent>
@@ -411,6 +432,6 @@ export function ImagePostCard({
                     </div>
                 </div>
             </div>
-        </div>
+        </motion.div>
     );
 }

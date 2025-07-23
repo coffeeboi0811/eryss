@@ -1,7 +1,7 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ResponsiveMasonryGrid } from "@/components/ResponsiveMasonryGrid";
 import { ImagePostCard } from "@/components/ImagePostCard";
-import { UserSearchResult } from "@/components/UserSearchResult";
+import { SearchResults } from "@/components/SearchResults";
 import prisma from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import { getAuthSession } from "@/lib/authSession";
@@ -180,34 +180,11 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
                     </TabsContent>
                     <TabsContent value="users" className="mt-0">
                         <div className="max-w-4xl mx-auto">
-                            {searchedUsers.length > 0 ? (
-                                <div className="bg-background rounded-lg flex flex-col gap-3">
-                                    {searchedUsers.map((user) => (
-                                        <UserSearchResult
-                                            key={user.id}
-                                            avatarSrc={user.image || ""}
-                                            fullName={user.name || ""}
-                                            bio={user.bio || ""}
-                                            userId={user.id}
-                                            followersCount={
-                                                user._count.followers
-                                            }
-                                            initialFollowing={userFollowStatuses.includes(
-                                                user.id
-                                            )}
-                                        />
-                                    ))}
-                                </div>
-                            ) : (
-                                <div className="text-center py-16">
-                                    <p className="text-muted-foreground text-lg">
-                                        No users found for &ldquo;{query}&rdquo;
-                                    </p>
-                                    <p className="text-muted-foreground text-sm mt-2">
-                                        Try searching with different keywords
-                                    </p>
-                                </div>
-                            )}
+                            <SearchResults
+                                users={searchedUsers}
+                                userFollowStatuses={userFollowStatuses}
+                                query={query}
+                            />
                         </div>
                     </TabsContent>
                 </Tabs>

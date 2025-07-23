@@ -4,6 +4,7 @@ import "./globals.css";
 import { Navbar } from "@/components/Navbar";
 import { ThemeProvider } from "@/components/theme-provider";
 import SessionWrapper from "@/components/SessionWrapper";
+import { PageTransition } from "@/components/PageTransition";
 import { Toaster } from "sonner";
 
 const geistSans = Geist({
@@ -27,9 +28,9 @@ export default function RootLayout({
     children: React.ReactNode;
 }>) {
     return (
-        <html lang="en" suppressHydrationWarning>
+        <html lang="en" suppressHydrationWarning className="overflow-x-hidden">
             <body
-                className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+                className={`${geistSans.variable} ${geistMono.variable} antialiased overflow-x-hidden`}
             >
                 <ThemeProvider
                     attribute="class"
@@ -39,7 +40,9 @@ export default function RootLayout({
                 >
                     <SessionWrapper>
                         <Navbar />
-                        <main className="pt-16 pb-16 md:pb-0">{children}</main>
+                        <main className="pt-16 pb-16 md:pb-0">
+                            <PageTransition>{children}</PageTransition>
+                        </main>
                     </SessionWrapper>
                     <Toaster
                         position="bottom-center"

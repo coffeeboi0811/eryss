@@ -38,6 +38,7 @@ import { useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
 import { signOut } from "next-auth/react";
 import { Session } from "next-auth";
+import { motion } from "framer-motion";
 
 interface UserMenuProps {
     session: Session;
@@ -128,10 +129,23 @@ export function UserMenu({ session }: UserMenuProps) {
                                             : "outline"
                                     }
                                     size="icon"
-                                    className="rounded-full w-8 h-8 flex items-center justify-center cursor-pointer"
+                                    className="rounded-full w-8 h-8 flex items-center justify-center cursor-pointer transition-all duration-200"
                                     onClick={() => setTheme("light")}
                                 >
-                                    <Sun className="w-5 h-5" />
+                                    <motion.div
+                                        animate={{
+                                            rotate: theme === "light" ? 360 : 0,
+                                            scale: theme === "light" ? 1.1 : 1,
+                                        }}
+                                        transition={{
+                                            duration: 0.4,
+                                            type: "spring",
+                                            stiffness: 260,
+                                            damping: 20,
+                                        }}
+                                    >
+                                        <Sun className="w-5 h-5" />
+                                    </motion.div>
                                 </Button>
                             </TooltipTrigger>
                             <TooltipContent>Light Mode</TooltipContent>
@@ -143,10 +157,23 @@ export function UserMenu({ session }: UserMenuProps) {
                                         theme === "dark" ? "default" : "outline"
                                     }
                                     size="icon"
-                                    className="rounded-full w-8 h-8 flex items-center justify-center cursor-pointer"
+                                    className="rounded-full w-8 h-8 flex items-center justify-center cursor-pointer transition-all duration-200"
                                     onClick={() => setTheme("dark")}
                                 >
-                                    <Moon className="w-5 h-5" />
+                                    <motion.div
+                                        animate={{
+                                            rotate: theme === "dark" ? 360 : 0,
+                                            scale: theme === "dark" ? 1.1 : 1,
+                                        }}
+                                        transition={{
+                                            duration: 0.4,
+                                            type: "spring",
+                                            stiffness: 260,
+                                            damping: 20,
+                                        }}
+                                    >
+                                        <Moon className="w-5 h-5" />
+                                    </motion.div>
                                 </Button>
                             </TooltipTrigger>
                             <TooltipContent>Dark Mode</TooltipContent>

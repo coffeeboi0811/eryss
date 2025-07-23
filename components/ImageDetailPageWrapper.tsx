@@ -48,9 +48,11 @@ export function ImageDetailPageWrapper({
     useEffect(() => {
         // hide body scroll for "this page only"
         document.body.style.overflow = "hidden";
+        document.documentElement.style.overflow = "hidden";
         return () => {
             // restore body scroll "when leaving this page"
             document.body.style.overflow = "";
+            document.documentElement.style.overflow = "";
         };
     }, []);
 
