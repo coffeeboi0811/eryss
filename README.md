@@ -1,10 +1,10 @@
 <div align="center">
-  <img src="public/logo.svg" alt="Eryss Logo" width="120" height="120" />
+  <img src="public/logo.jpg" alt="Eryss Logo" width="120" height="120" />
   
   # [Eryss](https://eryss.vercel.app)
   ### Discover and share visual inspiration
   
-  <img src="public/og-default.png" alt="Eryss Preview" width="600" />
+  <img src="public/og-default.png" alt="Eryss Preview" width="full" />
   
 </div>
 
