@@ -3,7 +3,7 @@ import Image from "next/image";
 
 export default function LoadingScreen() {
     return (
-        <div className="fixed inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center z-100">
             <div className="flex flex-col items-center space-y-6">
                 <div className="flex items-center justify-center">
                     <Image
