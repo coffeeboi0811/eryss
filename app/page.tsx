@@ -3,6 +3,17 @@ import { ImagePostCard } from "@/components/ImagePostCard";
 import prisma from "@/lib/prisma";
 import { shuffleArray } from "@/lib/shuffleArray";
 import { getAuthSession } from "@/lib/authSession";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+    title: "Eryss",
+    description: "Discover and share visual inspiration",
+    openGraph: {
+        title: "Eryss",
+        description: "Discover and share visual inspiration",
+        images: ["/og-default.png"],
+    },
+};
 
 export default async function Home() {
     const session = await getAuthSession();

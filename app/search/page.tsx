@@ -5,6 +5,17 @@ import { SearchResults } from "@/components/SearchResults";
 import prisma from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import { getAuthSession } from "@/lib/authSession";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+    title: "Search • Eryss",
+    description: "Search for visual content and discover creators",
+    openGraph: {
+        title: "Search • Eryss",
+        description: "Search for visual content and discover creators",
+        images: ["/og-default.png"],
+    },
+};
 
 interface SearchPageProps {
     searchParams: Promise<{

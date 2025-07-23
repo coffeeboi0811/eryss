@@ -2,6 +2,17 @@ import { ResponsiveMasonryGrid } from "@/components/ResponsiveMasonryGrid";
 import { ImagePostCard } from "@/components/ImagePostCard";
 import { requireAuth } from "@/lib/requireAuth";
 import prisma from "@/lib/prisma";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+    title: "Saved • Eryss",
+    description: "Your saved visual inspiration collection",
+    openGraph: {
+        title: "Saved • Eryss",
+        description: "Your saved visual inspiration collection",
+        images: ["/og-default.png"],
+    },
+};
 
 export default async function SavedImagesPage() {
     const session = await requireAuth();

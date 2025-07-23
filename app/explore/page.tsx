@@ -3,6 +3,18 @@ import { ResponsiveMasonryGrid } from "@/components/ResponsiveMasonryGrid";
 import { ImagePostCard } from "@/components/ImagePostCard";
 import prisma from "@/lib/prisma";
 import { getAuthSession } from "@/lib/authSession";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+    title: "Explore • Eryss",
+    description: "Explore trending visual content and discover new inspiration",
+    openGraph: {
+        title: "Explore • Eryss",
+        description:
+            "Explore trending visual content and discover new inspiration",
+        images: ["/og-default.png"],
+    },
+};
 
 export default async function ExplorePage() {
     const session = await getAuthSession();

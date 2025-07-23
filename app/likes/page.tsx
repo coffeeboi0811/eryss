@@ -2,6 +2,17 @@ import { ResponsiveMasonryGrid } from "@/components/ResponsiveMasonryGrid";
 import { ImagePostCard } from "@/components/ImagePostCard";
 import { requireAuth } from "@/lib/requireAuth";
 import prisma from "@/lib/prisma";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+    title: "Likes • Eryss",
+    description: "Your liked visual content collection",
+    openGraph: {
+        title: "Likes • Eryss",
+        description: "Your liked visual content collection",
+        images: ["/og-default.png"],
+    },
+};
 
 export default async function LikedImagesPage() {
     const session = await requireAuth();
