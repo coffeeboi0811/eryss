@@ -4,11 +4,69 @@ import { ImagePostCard } from "@/components/ImagePostCard";
 import prisma from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import { getAuthSession } from "@/lib/authSession";
+import { Metadata } from "next";
 
 interface UserProfilePageProps {
     params: Promise<{
         id: string;
     }>;
+}
+
+export async function generateMetadata({
+    params,
+}: UserProfilePageProps): Promise<Metadata> {
+    const { id } = await params;
+    // fetch the user for metadata
+    const user = await prisma.user.findUnique({
+        where: { id },
+        select: {
+            name: true,
+            bio: true,
+            image: true,
+            _count: {
+                select: {
+                    images: true,
+                    followers: true,
+                },
+            },
+        },
+    });
+    if (!user) {
+        return {
+            title: "User not found • Eryss",
+            description: "The user profile you're looking for doesn't exist",
+        };
+    }
+    const title = `${user.name || "User"} • Eryss`;
+    const description = user.bio
+        ? `${user.bio.slice(0, 160)}...`
+        : `${user.name || "User"} has shared ${
+              user._count.images
+          } visual creations and has ${
+              user._count.followers
+          } followers on Eryss`;
+    const ogImageUrl = user.image || "/og-default.png";
+    return {
+        title,
+        description,
+        openGraph: {
+            title,
+            description,
+            images: [
+                {
+                    url: ogImageUrl,
+                    alt: `${user.name || "User"}'s profile on Eryss`,
+                },
+            ],
+            type: "profile",
+        },
+        twitter: {
+            card: "summary_large_image",
+            title,
+            description,
+            images: [ogImageUrl],
+        },
+    };
 }
 
 export default async function UserProfilePage({

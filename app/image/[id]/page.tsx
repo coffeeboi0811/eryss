@@ -3,11 +3,69 @@ import { notFound } from "next/navigation";
 import prisma from "@/lib/prisma";
 import { getAuthSession } from "@/lib/authSession";
 import { shuffleArray } from "@/lib/shuffleArray";
+import { Metadata } from "next";
 
 interface ImageDetailPageProps {
     params: Promise<{
         id: string;
     }>;
+}
+
+export async function generateMetadata({
+    params,
+}: ImageDetailPageProps): Promise<Metadata> {
+    const { id } = await params;
+    // fetch the image for metadata
+    const image = await prisma.image.findUnique({
+        where: { id },
+        include: {
+            user: {
+                select: {
+                    name: true,
+                },
+            },
+        },
+    });
+    if (!image) {
+        return {
+            title: "Image not found • Eryss",
+            description: "The image you're looking for doesn't exist",
+        };
+    }
+    const title = image.title
+        ? `${image.title} • Eryss`
+        : `Image by ${image.user?.name || "Unknown"} • Eryss`;
+
+    const description = image.description
+        ? `${image.description.slice(0, 160)}...`
+        : `Visual inspiration shared by ${
+              image.user?.name || "a creator"
+          } on Eryss`;
+    const ogImageUrl = image.imageUrl || "/og-default.png";
+    return {
+        title,
+        description,
+        openGraph: {
+            title,
+            description,
+            images: [
+                {
+                    url: ogImageUrl,
+                    alt:
+                        image.title ||
+                        `Image by ${image.user?.name || "Unknown"}`,
+                },
+            ],
+            type: "article",
+            authors: image.user?.name ? [image.user.name] : undefined,
+        },
+        twitter: {
+            card: "summary_large_image",
+            title,
+            description,
+            images: [ogImageUrl],
+        },
+    };
 }
 
 export default async function ImageDetailPage({

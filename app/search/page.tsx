@@ -7,20 +7,46 @@ import { redirect } from "next/navigation";
 import { getAuthSession } from "@/lib/authSession";
 import { Metadata } from "next";
 
-export const metadata: Metadata = {
-    title: "Search • Eryss",
-    description: "Search for visual content and discover creators",
-    openGraph: {
-        title: "Search • Eryss",
-        description: "Search for visual content and discover creators",
-        images: ["/og-default.png"],
-    },
-};
-
 interface SearchPageProps {
     searchParams: Promise<{
         q?: string;
     }>;
+}
+
+export async function generateMetadata({
+    searchParams,
+}: SearchPageProps): Promise<Metadata> {
+    const { q } = await searchParams;
+    const query = q?.trim() || "";
+
+    if (!query) {
+        return {
+            title: "Search • Eryss",
+            description: "Search for visual content and discover creators",
+            openGraph: {
+                title: "Search • Eryss",
+                description: "Search for visual content and discover creators",
+                images: ["/og-default.png"],
+            },
+        };
+    }
+    const title = `"${query}" search results • Eryss`;
+    const description = `Discover visual content and creators related to "${query}" on Eryss`;
+    return {
+        title,
+        description,
+        openGraph: {
+            title,
+            description,
+            images: ["/og-default.png"],
+        },
+        twitter: {
+            card: "summary_large_image",
+            title,
+            description,
+            images: ["/og-default.png"],
+        },
+    };
 }
 
 export default async function SearchPage({ searchParams }: SearchPageProps) {
